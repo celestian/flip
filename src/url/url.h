@@ -7,6 +7,7 @@
 #include <talloc.h>
 
 #include "src/utils/errors.h"
+#include "src/utils/data.h"
 
 errno_t url_global_init();
 errno_t url_global_cleanup();
