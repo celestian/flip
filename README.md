@@ -3,6 +3,7 @@ Forex Simulation Platform
 
 ## Resources
 * [C/C++] http://en.cppreference.com
+* [talloc] https://talloc.samba.org/talloc/doc/html/group__talloc.html
 * [nanomsg] http://nanomsg.org/
 * [libcurl] https://curl.haxx.se/libcurl/c/libcurl.html
 * [sqlite] https://www.sqlite.org/
