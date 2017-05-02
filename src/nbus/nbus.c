@@ -9,6 +9,7 @@
 #include "nbus.h"
 #include "nbus_private.h"
 #include "src/utils/errors.h"
+#include "src/utils/logs.h"
 
 errno_t nbus_init(TALLOC_CTX* mem_ctx, const char* url,
                   struct nbus_ctx** _nbus_ctx)
@@ -77,8 +78,9 @@ errno_t nbus_send(struct nbus_ctx* nbus_ctx, const char* msg, size_t msg_size)
     if (bytes < 0) {
         printf("nn_send() failed [%d]: %s\n", nn_errno(), nn_strerror(errno));
     }
-    printf(">>> %d\n", bytes);
     // assert(bytes == msg_size);
+
+    LOG(LOG_NOTICE, "Test B.");
 
     return EOK;
 }

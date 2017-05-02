@@ -7,13 +7,13 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <syslog.h>
 #include <unistd.h>
 
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
 #include "src/utils/data.h"
 #include "src/utils/errors.h"
+#include "src/utils/logs.h"
 
 int main_module(void)
 {
@@ -23,15 +23,19 @@ int main_module(void)
     struct string_ctx* chunk;
     errno_t ret;
 
+    log_init("flip_listener");
+
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
-        printf("Error [%s:%d]\n", __FILE__, __LINE__);
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);
     }
 
+    LOG(LOG_CRIT, "Test A.");
+
     ret = nbus_init(mem_ctx, "ipc:///tmp/listener_pubsub.ipc", &nbus_ctx);
     if (ret != EOK) {
-        printf("Error [%d] [%s:%d]\n", ret, __FILE__, __LINE__);
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);
     }
 
@@ -40,7 +44,7 @@ int main_module(void)
     ret = url_init_ctx(mem_ctx, "https://btc-e.com/api/3/ticker/btc_usd",
                        &url_conn_ctx);
     if (ret != EOK) {
-        printf("Error [%d] [%s:%d]\n", ret, __FILE__, __LINE__);
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);
     }
 
@@ -48,13 +52,13 @@ int main_module(void)
     while (i > 0) {
         ret = url_get_data(mem_ctx, url_conn_ctx, &chunk);
         if (ret != EOK) {
-            printf("Error [%d] [%s:%d]\n", ret, __FILE__, __LINE__);
+            LOG(LOG_CRIT, "Critical failure: Not enough memory.");
             exit(EXIT_FAILURE);
         }
 
         ret = nbus_send(nbus_ctx, chunk->data, chunk->size);
         if (ret != EOK) {
-            printf("Error [%d] [%s:%d]\n", ret, __FILE__, __LINE__);
+            LOG(LOG_CRIT, "Critical failure: Not enough memory.");
             exit(EXIT_FAILURE);
         }
 
@@ -64,7 +68,7 @@ int main_module(void)
 
     ret = nbus_close(nbus_ctx);
     if (ret != EOK) {
-        printf("Error [%d] [%s:%d]\n", ret, __FILE__, __LINE__);
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);
     }
 
@@ -84,11 +88,10 @@ int main(int argc, char* argv[])
 
     pid = fork();
     if (pid < 0) {
-        printf("[error] Listener didn't start [fork()].\n");
+        printf("[error] Daemon didn't start [fork()].\n");
         exit(EXIT_FAILURE);
     }
     if (pid > 0) {
-        printf("[success] Listener started.\n");
         exit(EXIT_SUCCESS);
     }
 
@@ -96,13 +99,13 @@ int main(int argc, char* argv[])
 
     sid = setsid();
     if (sid < 0) {
-        printf("[error] Listener didn't start [setsid()].\n");
+        printf("[error] Daemon didn't start [setsid()].\n");
         exit(EXIT_FAILURE);
     }
 
     ret = chdir("/tmp");
     if (ret < 0) {
-        printf("[error] Listener didn't start [chdir() [%i] [%s]].\n", ret,
+        printf("[error] Daemon didn't start [chdir() [%i] [%s]].\n", ret,
                strerror(ret));
         exit(EXIT_FAILURE);
     }

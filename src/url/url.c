@@ -10,6 +10,7 @@
 #include "src/url/url_private.h"
 #include "src/utils/data.h"
 #include "src/utils/errors.h"
+#include "src/utils/logs.h"
 
 static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
                                   void* userp)
@@ -108,6 +109,8 @@ errno_t url_get_data(TALLOC_CTX* mem_ctx, struct url_conn_ctx* url_conn_ctx,
     *_chunk = talloc_steal(mem_ctx, url_conn_ctx->string);
 
     ret = EOK;
+
+    LOG(LOG_NOTICE, "Test C.");
 
 done:
     talloc_free(tmp_ctx);
