@@ -41,11 +41,11 @@ libflip_url_la_LIBADD = \
 	${CURL_LIBS}
 
 
-bin_PROGRAMS = listener
+bin_PROGRAMS = flip_crawler
 
-listener_SOURCES = \
-	src/listener/listener.c
-listener_LDADD = \
+flip_crawler_SOURCES = \
+	src/app_crawler/crawler.c
+flip_crawler_LDADD = \
 	libflip_utils.la \
 	libflip_nbus.la \
 	libflip_url.la \
