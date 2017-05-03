@@ -9,11 +9,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "src/log/logs.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
 #include "src/utils/data.h"
 #include "src/utils/errors.h"
-#include "src/utils/logs.h"
 
 int main_module(void)
 {

@@ -8,7 +8,7 @@
 #include <systemd/sd-journal.h>
 #include <unistd.h>
 
-#include "src/utils/logs.h"
+#include "src/log/logs.h"
 
 static const char* tag;
 
