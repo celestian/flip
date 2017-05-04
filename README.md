@@ -3,6 +3,7 @@ Forex Simulation Platform
 
 ## Resources
 * [C/C++] http://en.cppreference.com
+* [argp] https://www.gnu.org/software/libc/manual/html_node/Argp.html
 * [talloc] https://talloc.samba.org/talloc/doc/html/group__talloc.html
 * [nanomsg] http://nanomsg.org/
 * [libcurl] https://curl.haxx.se/libcurl/c/libcurl.html
