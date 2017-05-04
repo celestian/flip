@@ -36,15 +36,19 @@ static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
 
 errno_t url_global_init()
 {
-    curl_global_init(CURL_GLOBAL_ALL);
+    CURLcode ret;
+
+    ret = curl_global_init(CURL_GLOBAL_ALL);
+    if (ret != CURLE_OK) {
+        LOG(LOG_CRIT, "curl_global_init() failed [%d | %s]", ret,
+            curl_easy_strerror(ret));
+        return ENOENT;
+    }
+
     return EOK;
 }
 
-errno_t url_global_cleanup()
-{
-    curl_global_cleanup();
-    return EOK;
-}
+void url_global_cleanup() { curl_global_cleanup(); }
 
 errno_t url_init_ctx(TALLOC_CTX* mem_ctx, const char* url,
                      struct url_conn_ctx** _url_conn_ctx)

@@ -38,6 +38,10 @@ int main(int argc, char* argv[])
     }
 
     ret = url_global_init();
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "curl init failed");
+        exit(EXIT_FAILURE);
+    }
 
     ret = url_init_ctx(mem_ctx, "https://btc-e.com/api/3/ticker/btc_usd",
                        &url_conn_ctx);
@@ -70,7 +74,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    ret = url_global_cleanup();
+    url_global_cleanup();
 
     talloc_free(mem_ctx);
 

@@ -9,6 +9,6 @@ cppcheck \
     --enable=all \
     --suppress=missingIncludeSystem \
     --check-config \
-    -I${FLIP_SOURCE_PATH}/src/../ \
+    -I${FLIP_SOURCE_PATH} \
     -I${FLIP_SOURCE_PATH}/$(uname -m) \
     ${FLIP_SOURCE_PATH}/src

@@ -18,6 +18,13 @@ AC_SUBST(PACKAGE_YEAR, [$(LANG=C date '+%Y')])
 # Checks for programs.
 AC_PROG_CC
 
+AX_CHECK_COMPILE_FLAG([-std=c11], [
+  CFLAGS+=" -std=c11"
+], [
+  echo "C compiler cannot compile C11 code"
+  exit -1
+])
+
 # Checks for libraries.
 PKG_CHECK_MODULES([TALLOC], [talloc])
 PKG_CHECK_MODULES([NANOMSG], [nanomsg])

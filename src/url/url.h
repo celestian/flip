@@ -10,7 +10,7 @@
 #include "src/utils/errors.h"
 
 errno_t url_global_init();
-errno_t url_global_cleanup();
+void url_global_cleanup();
 
 struct url_conn_ctx;
 
