@@ -20,7 +20,7 @@
     do {                                                                       \
         log_fn(__FUNCTION__, __FILE__, __LINE__, level, format,                \
                ##__VA_ARGS__);                                                 \
-    } while (0)
+    } while (0);
 
 void log_init(const char* identity_tag);
 

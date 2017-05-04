@@ -8,8 +8,8 @@
 
 #include "nbus.h"
 #include "nbus_private.h"
-#include "src/log/logs.h"
 #include "src/utils/errors.h"
+#include "src/utils/logs.h"
 
 errno_t nbus_init(TALLOC_CTX* mem_ctx, const char* url,
                   struct nbus_ctx** _nbus_ctx)
