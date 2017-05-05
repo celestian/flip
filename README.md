@@ -1,6 +1,13 @@
 # flip
 Forex Simulation Platform
 
+
+## How to use
+```
+./flip_crawler ipc:///tmp/crawler_pubsub.ipc
+./flip_collector ipc:///tmp/crawler_pubsub.ipc
+```
+
 ## Resources
 * [C/C++] http://en.cppreference.com
 * [argp] https://www.gnu.org/software/libc/manual/html_node/Argp.html
@@ -14,4 +21,4 @@ https://www.gnu.org/software/automake/manual/automake.html#A-Library
 https://talloc.samba.org/talloc/doc/html/libtalloc__bestpractices.html
 
 
-nanocat --sub --connect ipc:///tmp/listener_pubsub.ipc -AQ
+nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
