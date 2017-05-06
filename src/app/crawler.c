@@ -64,8 +64,6 @@ int main(int argc, char* argv[])
 
     arguments.output_ipc = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
-    printf("INPUT_FILE = %s\n",
-           arguments.input_ipc ? arguments.input_ipc : "NULL");
 
     run_daemon("flip_crawler");
 
