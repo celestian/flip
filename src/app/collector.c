@@ -2,6 +2,10 @@
 #include <stdlib.h>
 
 #include "config.h"
+#include "src/nbus/nbus.h"
+#include "src/utils/daemon.h"
+#include "src/utils/errors.h"
+#include "src/utils/logs.h"
 
 const char* argp_program_version = PACKAGE_STRING;
 const char* argp_program_bug_address = PACKAGE_BUGREPORT;
@@ -43,13 +47,49 @@ static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
 
 int main(int argc, char** argv)
 {
+    TALLOC_CTX* mem_ctx;
     struct arguments arguments;
+    struct nbus_ctx* nbus_ctx;
+    errno_t ret;
 
     arguments.input_ipc = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-    printf("OUTPUT_FILE = %s\n",
-           arguments.output_ipc ? arguments.output_ipc : "NULL");
+    run_daemon("flip_collector");
 
-    exit(0);
+    mem_ctx = talloc_new(NULL);
+    if (mem_ctx == NULL) {
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+        exit(EXIT_FAILURE);
+    }
+
+    ret = nbus_init_sub(mem_ctx, arguments.input_ipc, &nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+        exit(EXIT_FAILURE);
+    }
+
+    /*
+        int i = 10;
+        while (i > 0) {
+            ret = nbus_send(nbus_ctx, chunk->data, chunk->size);
+            if (ret != EOK) {
+                LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+                exit(EXIT_FAILURE);
+            }
+
+            sleep(1);
+            i--;
+        }
+    */
+
+    ret = nbus_close(nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+        exit(EXIT_FAILURE);
+    }
+
+    talloc_free(mem_ctx);
+
+    exit(EXIT_SUCCESS);
 }

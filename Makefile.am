@@ -15,10 +15,10 @@ bin_PROGRAMS = \
 
 flip_crawler_SOURCES = \
 	src/app/crawler.c \
-	src/nbus/nbus.c \
-	src/url/url.c \
 	src/utils/daemon.c \
-	src/utils/logs.c
+	src/utils/logs.c \
+	src/nbus/nbus.c \
+	src/url/url.c
 flip_crawler_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
@@ -31,7 +31,8 @@ flip_crawler_LDFLAGS = \
 flip_collector_SOURCES = \
 	src/app/collector.c \
 	src/utils/daemon.c \
-	src/utils/logs.c
+	src/utils/logs.c \
+	src/nbus/nbus.c
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
