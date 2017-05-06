@@ -75,9 +75,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    LOG(LOG_CRIT, "Test A.");
-
-    ret = nbus_init(mem_ctx, "ipc:///tmp/crawler_pubsub.ipc", &nbus_ctx);
+    ret = nbus_init_pub(mem_ctx, arguments.output_ipc, &nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);

@@ -13,8 +13,8 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-errno_t nbus_init(TALLOC_CTX* mem_ctx, const char* url,
-                  struct nbus_ctx** _nbus_ctx)
+static errno_t nbus_init_pubsub(TALLOC_CTX* mem_ctx, const char* url,
+                                int protocol, struct nbus_ctx** _nbus_ctx)
 {
     TALLOC_CTX* tmp_ctx;
     struct nbus_ctx* nbus_ctx = NULL;
@@ -31,7 +31,7 @@ errno_t nbus_init(TALLOC_CTX* mem_ctx, const char* url,
         goto done;
     }
 
-    nbus_ctx->sock_fd = nn_socket(AF_SP, NN_PUB);
+    nbus_ctx->sock_fd = nn_socket(AF_SP, protocol);
     if (nbus_ctx->sock_fd < 0) {
         printf("nn_socket() failed [%d]: %s\n", nn_errno(), nn_strerror(errno));
         ret = ENOENT;
@@ -53,6 +53,18 @@ done:
     return ret;
 }
 
+errno_t nbus_init_pub(TALLOC_CTX* mem_ctx, const char* url,
+                      struct nbus_ctx** _nbus_ctx)
+{
+    return nbus_init_pubsub(mem_ctx, url, NN_PUB, _nbus_ctx);
+}
+
+errno_t nbus_init_sub(TALLOC_CTX* mem_ctx, const char* url,
+                      struct nbus_ctx** _nbus_ctx)
+{
+    return nbus_init_pubsub(mem_ctx, url, NN_SUB, _nbus_ctx);
+}
+
 errno_t nbus_close(struct nbus_ctx* nbus_ctx)
 {
 
@@ -61,6 +73,7 @@ errno_t nbus_close(struct nbus_ctx* nbus_ctx)
     }
 
     nn_shutdown(nbus_ctx->sock_fd, nbus_ctx->endpoint_id);
+    // TODO: Errors!!
     talloc_free(nbus_ctx);
 
     return EOK;
