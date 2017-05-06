@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <nanomsg/nn.h>
 #include <nanomsg/pubsub.h>
@@ -8,6 +9,7 @@
 
 #include "nbus.h"
 #include "nbus_private.h"
+#include "src/utils/data.h"
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
@@ -83,4 +85,50 @@ errno_t nbus_send(struct nbus_ctx* nbus_ctx, const char* msg, size_t msg_size)
     LOG(LOG_NOTICE, "Test B.");
 
     return EOK;
+}
+
+errno_t nbus_recieve(TALLOC_CTX* mem_ctx, struct nbus_ctx* nbus_ctx,
+                     struct string_ctx** _chunk)
+{
+    TALLOC_CTX* tmp_ctx;
+    void* buffer = NULL;
+    int msg_size;
+    struct string_ctx* chunk;
+    errno_t ret;
+
+    tmp_ctx = talloc_new(NULL);
+    if (tmp_ctx == NULL) {
+        return ENOMEM;
+    }
+
+    chunk = talloc_zero(tmp_ctx, struct string_ctx);
+    if (chunk == NULL) {
+        ret = ENOMEM;
+        LOG(LOG_ERR, "talloc_zero() failed. [%d | %s]", ret, strerror(ret));
+        goto done;
+    }
+
+    msg_size = nn_recv(nbus_ctx->sock_fd, &buffer, NN_MSG, 0);
+    if (msg_size < 0) {
+        // TODO: EAGAIN has special meaning.
+        LOG(LOG_ERR, "nn_recv() failed. [%d | %s]", errno, nn_strerror(errno));
+        ret = errno;
+        goto done;
+    }
+
+    chunk->data = talloc_strndup(chunk->data, buffer, msg_size);
+    if (chunk->data == NULL) {
+        ret = ENOMEM;
+        LOG(LOG_ERR, "talloc_strndup() failed. [%d | %s]", ret, strerror(ret));
+        goto done;
+    }
+    chunk->size = talloc_array_length(chunk->data);
+    nn_freemsg(buffer);
+
+    *_chunk = talloc_steal(mem_ctx, chunk);
+    ret = EOK;
+
+done:
+    talloc_free(tmp_ctx);
+    return ret;
 }
