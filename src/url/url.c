@@ -12,8 +12,8 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
-                                  void* userp)
+static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
+                                  void *userp)
 {
     size_t real_size = size * nmemb;
 
@@ -21,7 +21,7 @@ static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
         return 0;
     }
 
-    struct string_ctx* mem = (struct string_ctx*)userp;
+    struct string_ctx *mem = (struct string_ctx *)userp;
     mem->data = talloc_strndup(mem->data, contents, real_size);
     if (mem->data == NULL) {
         fprintf(stderr,
@@ -50,11 +50,11 @@ errno_t url_global_init()
 
 void url_global_cleanup() { curl_global_cleanup(); }
 
-errno_t url_init_ctx(TALLOC_CTX* mem_ctx, const char* url,
-                     struct url_conn_ctx** _url_conn_ctx)
+errno_t url_init_ctx(TALLOC_CTX *mem_ctx, const char *url,
+                     struct url_conn_ctx **_url_conn_ctx)
 {
-    TALLOC_CTX* tmp_ctx;
-    struct url_conn_ctx* url_conn_ctx;
+    TALLOC_CTX *tmp_ctx;
+    struct url_conn_ctx *url_conn_ctx;
     errno_t ret;
 
     tmp_ctx = talloc_new(NULL);
@@ -79,7 +79,7 @@ errno_t url_init_ctx(TALLOC_CTX* mem_ctx, const char* url,
     curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEFUNCTION,
                      WriteMemoryCallback);
     curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEDATA,
-                     (void*)url_conn_ctx->string);
+                     (void *)url_conn_ctx->string);
     curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_USERAGENT,
                      "libcurl-agent/1.0");
 
@@ -91,10 +91,10 @@ done:
     return ret;
 }
 
-errno_t url_get_data(TALLOC_CTX* mem_ctx, struct url_conn_ctx* url_conn_ctx,
-                     struct string_ctx** _chunk)
+errno_t url_get_data(TALLOC_CTX *mem_ctx, struct url_conn_ctx *url_conn_ctx,
+                     struct string_ctx **_chunk)
 {
-    TALLOC_CTX* tmp_ctx;
+    TALLOC_CTX *tmp_ctx;
     CURLcode res;
     errno_t ret;
 
@@ -121,7 +121,7 @@ done:
     return ret;
 }
 
-errno_t url_close(struct url_conn_ctx* url_conn_ctx_ctx)
+errno_t url_close(struct url_conn_ctx *url_conn_ctx_ctx)
 {
     curl_easy_cleanup(url_conn_ctx_ctx->curl_handle);
     talloc_free(url_conn_ctx_ctx);

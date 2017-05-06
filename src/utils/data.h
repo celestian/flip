@@ -2,7 +2,7 @@
 #define __DATA_H__
 
 struct string_ctx {
-    char* data;
+    char *data;
     size_t size;
 };
 

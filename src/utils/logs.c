@@ -10,12 +10,12 @@
 
 #include "src/utils/logs.h"
 
-static const char* tag;
+static const char *tag;
 
-static void log_handler(const char* function, const char* file, int line,
-                        int priority, const char* format, va_list ap)
+static void log_handler(const char *function, const char *file, int line,
+                        int priority, const char *format, va_list ap)
 {
-    char* message;
+    char *message;
     int ret;
 
     ret = vasprintf(&message, format, ap);
@@ -32,10 +32,10 @@ static void log_handler(const char* function, const char* file, int line,
     free(message);
 }
 
-void log_init(const char* identity_tag) { tag = identity_tag; }
+void log_init(const char *identity_tag) { tag = identity_tag; }
 
-void log_fn(const char* function, const char* file, int line, int priority,
-            const char* format, ...)
+void log_fn(const char *function, const char *file, int line, int priority,
+            const char *format, ...)
 {
     va_list ap;
 

@@ -7,20 +7,20 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-const char* argp_program_version = PACKAGE_STRING;
-const char* argp_program_bug_address = PACKAGE_BUGREPORT;
+const char *argp_program_version = PACKAGE_STRING;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
 static char doc[] = "flip_collector | daemon for collecting data from crawler";
 
 static char args_doc[] = "<INPUT_IPC>";
 static struct argp_option options[] = { { 0 } };
 
 struct arguments {
-    char* input_ipc;
+    char *input_ipc;
 };
 
-static error_t parse_opt(int key, char* arg, struct argp_state* state)
+static error_t parse_opt(int key, char *arg, struct argp_state *state)
 {
-    struct arguments* arguments = state->input;
+    struct arguments *arguments = state->input;
 
     switch (key) {
     case ARGP_KEY_ARG:
@@ -45,11 +45,11 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
 
 static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    TALLOC_CTX* mem_ctx;
+    TALLOC_CTX *mem_ctx;
     struct arguments arguments;
-    struct nbus_ctx* nbus_ctx;
+    struct nbus_ctx *nbus_ctx;
     errno_t ret;
 
     arguments.input_ipc = NULL;

@@ -22,9 +22,9 @@
                ##__VA_ARGS__);                                                 \
     } while (0);
 
-void log_init(const char* identity_tag);
+void log_init(const char *identity_tag);
 
-void log_fn(const char* function, const char* file, int line, int priority,
-            const char* format, ...);
+void log_fn(const char *function, const char *file, int line, int priority,
+            const char *format, ...);
 
 #endif /* __UTIL_LOGS_H__ */

@@ -13,11 +13,11 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-static errno_t nbus_init_pubsub(TALLOC_CTX* mem_ctx, const char* url,
-                                int protocol, struct nbus_ctx** _nbus_ctx)
+static errno_t nbus_init_pubsub(TALLOC_CTX *mem_ctx, const char *url,
+                                int protocol, struct nbus_ctx **_nbus_ctx)
 {
-    TALLOC_CTX* tmp_ctx;
-    struct nbus_ctx* nbus_ctx = NULL;
+    TALLOC_CTX *tmp_ctx;
+    struct nbus_ctx *nbus_ctx = NULL;
     errno_t ret;
 
     tmp_ctx = talloc_new(NULL);
@@ -53,19 +53,19 @@ done:
     return ret;
 }
 
-errno_t nbus_init_pub(TALLOC_CTX* mem_ctx, const char* url,
-                      struct nbus_ctx** _nbus_ctx)
+errno_t nbus_init_pub(TALLOC_CTX *mem_ctx, const char *url,
+                      struct nbus_ctx **_nbus_ctx)
 {
     return nbus_init_pubsub(mem_ctx, url, NN_PUB, _nbus_ctx);
 }
 
-errno_t nbus_init_sub(TALLOC_CTX* mem_ctx, const char* url,
-                      struct nbus_ctx** _nbus_ctx)
+errno_t nbus_init_sub(TALLOC_CTX *mem_ctx, const char *url,
+                      struct nbus_ctx **_nbus_ctx)
 {
     return nbus_init_pubsub(mem_ctx, url, NN_SUB, _nbus_ctx);
 }
 
-errno_t nbus_close(struct nbus_ctx* nbus_ctx)
+errno_t nbus_close(struct nbus_ctx *nbus_ctx)
 {
 
     if (nbus_ctx == NULL) {
@@ -79,7 +79,7 @@ errno_t nbus_close(struct nbus_ctx* nbus_ctx)
     return EOK;
 }
 
-errno_t nbus_send(struct nbus_ctx* nbus_ctx, const char* msg, size_t msg_size)
+errno_t nbus_send(struct nbus_ctx *nbus_ctx, const char *msg, size_t msg_size)
 {
 
     int bytes;
@@ -100,13 +100,13 @@ errno_t nbus_send(struct nbus_ctx* nbus_ctx, const char* msg, size_t msg_size)
     return EOK;
 }
 
-errno_t nbus_recieve(TALLOC_CTX* mem_ctx, struct nbus_ctx* nbus_ctx,
-                     struct string_ctx** _chunk)
+errno_t nbus_recieve(TALLOC_CTX *mem_ctx, struct nbus_ctx *nbus_ctx,
+                     struct string_ctx **_chunk)
 {
-    TALLOC_CTX* tmp_ctx;
-    void* buffer = NULL;
+    TALLOC_CTX *tmp_ctx;
+    void *buffer = NULL;
     int msg_size;
-    struct string_ctx* chunk;
+    struct string_ctx *chunk;
     errno_t ret;
 
     tmp_ctx = talloc_new(NULL);

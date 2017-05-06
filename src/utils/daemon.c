@@ -8,7 +8,7 @@
 #include "src/utils/daemon.h"
 #include "src/utils/logs.h"
 
-void run_daemon(const char* identity_tag)
+void run_daemon(const char *identity_tag)
 {
     pid_t pid = 0;
     pid_t sid = 0;
