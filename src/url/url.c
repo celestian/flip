@@ -24,9 +24,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
     struct string_ctx *mem = (struct string_ctx *)userp;
     mem->data = talloc_strndup(mem->data, contents, real_size);
     if (mem->data == NULL) {
-        fprintf(stderr,
-                "Error [%d] [%s:%d] : Function talloc_strndup() failed.\n",
-                ENOMEM, __FILE__, __LINE__);
+        LOG(LOG_ERR, "talloc_strndup() failed.");
         return 0;
     }
     mem->size = talloc_array_length(mem->data);
@@ -40,7 +38,7 @@ errno_t url_global_init()
 
     ret = curl_global_init(CURL_GLOBAL_ALL);
     if (ret != CURLE_OK) {
-        LOG(LOG_CRIT, "curl_global_init() failed [%d | %s]", ret,
+        LOG(LOG_CRIT, "curl_global_init() failed. [%d | %s]", ret,
             curl_easy_strerror(ret));
         return ENOENT;
     }
@@ -55,33 +53,70 @@ errno_t url_init_ctx(TALLOC_CTX *mem_ctx, const char *url,
 {
     TALLOC_CTX *tmp_ctx;
     struct url_conn_ctx *url_conn_ctx;
+    CURLcode cret;
     errno_t ret;
 
     tmp_ctx = talloc_new(NULL);
     if (tmp_ctx == NULL) {
+        LOG(LOG_CRIT, "talloc_new() failed.");
         return ENOMEM;
     }
 
     url_conn_ctx = talloc_zero(tmp_ctx, struct url_conn_ctx);
     if (url_conn_ctx == NULL) {
+        LOG(LOG_CRIT, "talloc_zero() failed.");
         ret = ENOMEM;
         goto done;
     }
 
     url_conn_ctx->string = talloc_zero(url_conn_ctx, struct string_ctx);
     if (url_conn_ctx->string == NULL) {
+        LOG(LOG_CRIT, "talloc_zero() failed.");
         ret = ENOMEM;
         goto done;
     }
 
     url_conn_ctx->curl_handle = curl_easy_init();
-    curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_URL, url);
-    curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEFUNCTION,
-                     WriteMemoryCallback);
-    curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEDATA,
-                     (void *)url_conn_ctx->string);
-    curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_USERAGENT,
-                     "libcurl-agent/1.0");
+    if (url_conn_ctx->curl_handle == NULL) {
+        LOG(LOG_CRIT, "curl_easy_init() failed.");
+        ret = EIO;
+        goto done;
+    }
+
+    cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_URL, url);
+    if (cret != CURLE_OK) {
+        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+            curl_easy_strerror(cret));
+        ret = ENOENT;
+        goto done;
+    }
+
+    cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEFUNCTION,
+                            WriteMemoryCallback);
+    if (cret != CURLE_OK) {
+        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+            curl_easy_strerror(cret));
+        ret = ENOENT;
+        goto done;
+    }
+
+    cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEDATA,
+                            (void *)url_conn_ctx->string);
+    if (cret != CURLE_OK) {
+        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+            curl_easy_strerror(cret));
+        ret = ENOENT;
+        goto done;
+    }
+
+    cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_USERAGENT,
+                            "libcurl-agent/1.0");
+    if (cret != CURLE_OK) {
+        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+            curl_easy_strerror(cret));
+        ret = ENOENT;
+        goto done;
+    }
 
     *_url_conn_ctx = talloc_steal(mem_ctx, url_conn_ctx);
     ret = EOK;
@@ -95,26 +130,26 @@ errno_t url_get_data(TALLOC_CTX *mem_ctx, struct url_conn_ctx *url_conn_ctx,
                      struct string_ctx **_chunk)
 {
     TALLOC_CTX *tmp_ctx;
-    CURLcode res;
+    CURLcode cret;
     errno_t ret;
 
     tmp_ctx = talloc_new(NULL);
     if (tmp_ctx == NULL) {
+        LOG(LOG_CRIT, "talloc_new() failed.");
         return ENOMEM;
     }
 
-    res = curl_easy_perform(url_conn_ctx->curl_handle);
-    if (res != CURLE_OK) {
-        fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                curl_easy_strerror(res));
+    cret = curl_easy_perform(url_conn_ctx->curl_handle);
+    if (cret != CURLE_OK) {
+        LOG(LOG_CRIT, "curl_easy_perform() failed. [%d | %s]", cret,
+            curl_easy_strerror(cret));
+        ret = ENOENT;
         goto done;
     }
 
     *_chunk = talloc_steal(mem_ctx, url_conn_ctx->string);
 
     ret = EOK;
-
-    LOG(LOG_NOTICE, "Test C.");
 
 done:
     talloc_free(tmp_ctx);
