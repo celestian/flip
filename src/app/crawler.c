@@ -100,6 +100,9 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
+        talloc_free(chunk->data);
+        chunk->data = talloc_asprintf(mem_ctx, "-- %d --", i);
+
         ret = nbus_send(nbus_ctx, chunk->data, chunk->size);
         if (ret != EOK) {
             LOG(LOG_CRIT, "Critical failure: Not enough memory.");
@@ -109,6 +112,8 @@ int main(int argc, char *argv[])
         sleep(1);
         i--;
     }
+
+    sleep(15);
 
     ret = nbus_close(nbus_ctx);
     if (ret != EOK) {
