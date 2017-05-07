@@ -15,6 +15,7 @@ bin_PROGRAMS = \
 
 flip_crawler_SOURCES = \
 	src/app/crawler.c \
+	src/utils/utils.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
 	src/nbus/nbus.c \
@@ -30,6 +31,7 @@ flip_crawler_LDFLAGS = \
 
 flip_collector_SOURCES = \
 	src/app/collector.c \
+	src/utils/utils.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
 	src/nbus/nbus.c
