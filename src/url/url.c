@@ -38,7 +38,7 @@ errno_t url_global_init()
 
     ret = curl_global_init(CURL_GLOBAL_ALL);
     if (ret != CURLE_OK) {
-        LOG(LOG_CRIT, "curl_global_init() failed. [%d | %s]", ret,
+        LOG(LOG_ERR, "curl_global_init() failed. [%d | %s]", ret,
             curl_easy_strerror(ret));
         return ENOENT;
     }
@@ -58,34 +58,34 @@ errno_t url_init_ctx(TALLOC_CTX *mem_ctx, const char *url,
 
     tmp_ctx = talloc_new(NULL);
     if (tmp_ctx == NULL) {
-        LOG(LOG_CRIT, "talloc_new() failed.");
+        LOG(LOG_ERR, "talloc_new() failed.");
         return ENOMEM;
     }
 
     url_conn_ctx = talloc_zero(tmp_ctx, struct url_conn_ctx);
     if (url_conn_ctx == NULL) {
-        LOG(LOG_CRIT, "talloc_zero() failed.");
+        LOG(LOG_ERR, "talloc_zero() failed.");
         ret = ENOMEM;
         goto done;
     }
 
     url_conn_ctx->string = talloc_zero(url_conn_ctx, struct string_ctx);
     if (url_conn_ctx->string == NULL) {
-        LOG(LOG_CRIT, "talloc_zero() failed.");
+        LOG(LOG_ERR, "talloc_zero() failed.");
         ret = ENOMEM;
         goto done;
     }
 
     url_conn_ctx->curl_handle = curl_easy_init();
     if (url_conn_ctx->curl_handle == NULL) {
-        LOG(LOG_CRIT, "curl_easy_init() failed.");
+        LOG(LOG_ERR, "curl_easy_init() failed.");
         ret = EIO;
         goto done;
     }
 
     cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_URL, url);
     if (cret != CURLE_OK) {
-        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+        LOG(LOG_ERR, "curl_easy_setopt() failed. [%d | %s]", cret,
             curl_easy_strerror(cret));
         ret = ENOENT;
         goto done;
@@ -94,7 +94,7 @@ errno_t url_init_ctx(TALLOC_CTX *mem_ctx, const char *url,
     cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEFUNCTION,
                             WriteMemoryCallback);
     if (cret != CURLE_OK) {
-        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+        LOG(LOG_ERR, "curl_easy_setopt() failed. [%d | %s]", cret,
             curl_easy_strerror(cret));
         ret = ENOENT;
         goto done;
@@ -103,7 +103,7 @@ errno_t url_init_ctx(TALLOC_CTX *mem_ctx, const char *url,
     cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_WRITEDATA,
                             (void *)url_conn_ctx->string);
     if (cret != CURLE_OK) {
-        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+        LOG(LOG_ERR, "curl_easy_setopt() failed. [%d | %s]", cret,
             curl_easy_strerror(cret));
         ret = ENOENT;
         goto done;
@@ -112,7 +112,7 @@ errno_t url_init_ctx(TALLOC_CTX *mem_ctx, const char *url,
     cret = curl_easy_setopt(url_conn_ctx->curl_handle, CURLOPT_USERAGENT,
                             "libcurl-agent/1.0");
     if (cret != CURLE_OK) {
-        LOG(LOG_CRIT, "curl_easy_setopt() failed. [%d | %s]", cret,
+        LOG(LOG_ERR, "curl_easy_setopt() failed. [%d | %s]", cret,
             curl_easy_strerror(cret));
         ret = ENOENT;
         goto done;
@@ -135,13 +135,13 @@ errno_t url_get_data(TALLOC_CTX *mem_ctx, struct url_conn_ctx *url_conn_ctx,
 
     tmp_ctx = talloc_new(NULL);
     if (tmp_ctx == NULL) {
-        LOG(LOG_CRIT, "talloc_new() failed.");
+        LOG(LOG_ERR, "talloc_new() failed.");
         return ENOMEM;
     }
 
     cret = curl_easy_perform(url_conn_ctx->curl_handle);
     if (cret != CURLE_OK) {
-        LOG(LOG_CRIT, "curl_easy_perform() failed. [%d | %s]", cret,
+        LOG(LOG_ERR, "curl_easy_perform() failed. [%d | %s]", cret,
             curl_easy_strerror(cret));
         ret = ENOENT;
         goto done;
@@ -163,3 +163,16 @@ errno_t url_close(struct url_conn_ctx *url_conn_ctx_ctx)
 
     return EOK;
 }
+
+/*
+ * TODO:
+    struct curl_slist *hs = curl_slist_append(NULL, "Accept: application/json");
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, hs);
+
+    CURLcode res = curl_easy_perform(curl);
+    if (res != CURLE_OK)
+        log_die("curl_easy_perform failed: %s", curl_easy_strerror(res));
+
+    curl_easy_cleanup(curl);
+    curl_slist_free_all(hs);
+*/

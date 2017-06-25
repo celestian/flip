@@ -34,7 +34,10 @@ flip_collector_SOURCES = \
 	src/utils/utils.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
-	src/nbus/nbus.c
+	src/nbus/nbus.c \
+	src/json/jsmn/jsmn.c \
+	src/json/json.c \
+	src/json/btc-e_ticker.c
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \

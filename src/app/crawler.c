@@ -100,8 +100,10 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
+        /*
         talloc_free(chunk->data);
         chunk->data = talloc_asprintf(mem_ctx, "-- %d --", i);
+        */
 
         ret = nbus_send(nbus_ctx, chunk->data, chunk->size);
         if (ret != EOK) {

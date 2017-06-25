@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "config.h"
+#include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
 #include "src/utils/daemon.h"
 #include "src/utils/errors.h"
@@ -52,13 +53,13 @@ int main(int argc, char **argv)
     struct arguments arguments;
     struct nbus_ctx *nbus_ctx;
     struct string_ctx *chunk;
+    struct btce_ticker *ticker_data;
     errno_t ret;
 
     arguments.input_ipc = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-    log_init("flip_collector");
-    //    run_daemon("flip_collector");
+    run_daemon("flip_collector");
 
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
@@ -74,24 +75,35 @@ int main(int argc, char **argv)
 
     int i = 20;
     while (i > 0) {
-
-        errno_t nbus_recieve(TALLOC_CTX * mem_ctx, struct nbus_ctx * nbus_ctx,
-                             struct string_ctx * *_chunk);
-
         ret = nbus_recieve(mem_ctx, nbus_ctx, &chunk);
-        if (ret == EOK) {
-            printf(">>> [%s]\n", chunk->data);
-        } else {
-            printf(">>> %d\n", ret);
+        if (ret != EOK && ret != EAGAIN) {
+            LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
+            talloc_free(mem_ctx);
+            exit(EXIT_FAILURE);
         }
-        /*
-                if (ret != EOK) {
-                    LOG(LOG_CRIT, "Critical failure: Not enough memory.");
-                    exit(EXIT_FAILURE);
-                }
-        */
+        if (ret == EAGAIN) {
+            sleep(1);
+            i--;
+            continue;
+        }
 
-        sleep(2);
+        ret = parse_btc_e_ticker(mem_ctx, chunk->data, &ticker_data);
+
+        LOG(LOG_CRIT, "[%s : %d : h %f l %f a %f v %f vc %f l %f b %f s %f]\n",
+            ticker_data->pair, ticker_data->updated, ticker_data->high,
+            ticker_data->low, ticker_data->avg, ticker_data->vol,
+            ticker_data->vol_cur, ticker_data->last, ticker_data->buy,
+            ticker_data->sell);
+
+        talloc_free(ticker_data);
+        ticker_data = NULL;
+
+        talloc_free(chunk);
+        chunk = NULL;
+
+        printf(">>> Z2 i=%d\n", i);
+
+        sleep(1);
         i--;
     }
 
