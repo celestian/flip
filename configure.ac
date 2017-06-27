@@ -30,6 +30,8 @@ PKG_CHECK_MODULES([TALLOC], [talloc])
 PKG_CHECK_MODULES([NANOMSG], [nanomsg])
 PKG_CHECK_MODULES([LIBSYSTEMD], [libsystemd])
 
+AX_LIB_SQLITE3()
+
 AX_LIB_CURL([7.50.0],,[
   AC_MSG_ERROR([Your system lacks libcurl >= 7.50.0])
 ])

@@ -37,8 +37,12 @@ flip_collector_SOURCES = \
 	src/nbus/nbus.c \
 	src/json/jsmn/jsmn.c \
 	src/json/json.c \
-	src/json/btc-e_ticker.c
+	src/json/btc-e_ticker.c \
+	src/sql/sql.c
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
-	${NANOMSG_LIBS}
+	${NANOMSG_LIBS} \
+	${SQLITE3_LDFLAGS}
+flip_collector_LDFLAGS = \
+	${SQLITE3_CFLAGS}
