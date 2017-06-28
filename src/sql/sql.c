@@ -37,7 +37,7 @@ errno_t sql_init(TALLOC_CTX *mem_ctx, const char *db_file_name,
     if (ret != SQLITE_OK) {
         LOG(LOG_ERR, "sqlite3_open() failed [%s | %s]", db_file_name,
             sqlite3_errmsg(sql_ctx->db));
-        sqlite3_close(sql_ctx->db);
+        sql_close(sql_ctx);
         ret = EIO;
         goto done;
     }
@@ -63,6 +63,41 @@ errno_t sql_close(struct sql_ctx *sql_ctx)
     // if (ret != SQLITE_OK)
 
     talloc_free(sql_ctx);
+    ret = EOK;
+
+done:
+    return ret;
+}
+
+errno_t sql_create_ticks_table(struct sql_ctx *sql_ctx)
+{
+    char *err_msg = 0;
+    int ret;
+
+    char *sql = "CREATE TABLE IF NOT EXISTS Ticks ("
+                "    id INT,"
+                "    pair TEXT,"
+                "    high REAL,"
+                "    low REAL,"
+                "    avg REAL,"
+                "    vol REAL,"
+                "    vol_cur REAL,"
+                "    last REAL,"
+                "    buy REAL,"
+                "    sell REAL,"
+                "    updated NUMERIC"
+                "    PRIMARY KEY(id ASC)"
+                ")";
+
+    ret = sqlite3_exec(sql_ctx->db, sql, 0, 0, &err_msg);
+    if (ret != SQLITE_OK) {
+        LOG(LOG_ERR, "sqlite3_exec() failed [%s]", err_msg);
+        sqlite3_free(err_msg);
+        sql_close(sql_ctx);
+        ret = EIO;
+        goto done;
+    }
+
     ret = EOK;
 
 done:
