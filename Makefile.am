@@ -2,6 +2,12 @@ dist_doc_DATA = AUTHORS ChangeLog COPYING INSTALL LICENSE NEWS README
 
 ACLOCAL_AMFLAGS = -I build-aux/m4 -Wall -Werror
 
+if DEBUG
+AM_CFLAGS = -g3 -O0 -DDEBUG
+else
+AM_CFLAGS = -O2
+endif
+
 AM_CPPFLAGS = \
 	$(TALLOC_CFLAGS) \
 	$(NANOMSG_CFLAGS) \

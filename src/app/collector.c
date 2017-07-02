@@ -9,6 +9,8 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
+#define APP_TAG "flip_collector"
+
 const char *argp_program_version = PACKAGE_STRING;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
 static char doc[] = "flip_collector | daemon for collecting data from crawler";
@@ -59,7 +61,13 @@ int main(int argc, char **argv)
     arguments.input_ipc = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-    run_daemon("flip_collector");
+#ifdef DEBUG
+    log_init(APP_TAG);
+#else
+    run_daemon(APP_TAG);
+#endif
+
+    LOG(LOG_INFO, "Started...");
 
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {

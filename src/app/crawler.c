@@ -15,6 +15,8 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
+#define APP_TAG "flip_crawler"
+
 const char *argp_program_version = PACKAGE_STRING;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
 static char doc[] = "flip_crawler | daemon for data crawling";
@@ -65,7 +67,11 @@ int main(int argc, char *argv[])
     arguments.output_ipc = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-    run_daemon("flip_crawler");
+#ifdef DEBUG
+    log_init(APP_TAG);
+#else
+    run_daemon(APP_TAG);
+#endif
 
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {

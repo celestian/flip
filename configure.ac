@@ -14,6 +14,18 @@ AC_SUBST(PACKAGE_HOMEPAGE, ["https://github.com/celestian/flip"])
 AC_SUBST(PACKAGE_MONTH, [$(LANG=C date '+%B')])
 AC_SUBST(PACKAGE_YEAR, [$(LANG=C date '+%Y')])
 
+# Debug
+AC_ARG_ENABLE(debug,
+AS_HELP_STRING([--enable-debug],
+               [enable debugging, default: no]),
+[case "${enableval}" in
+             yes) debug=true ;;
+             no)  debug=false ;;
+             *)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+esac],
+[debug=false])
+
+AM_CONDITIONAL(DEBUG, test x"$debug" = x"true")
 
 # Checks for programs.
 AC_PROG_CC

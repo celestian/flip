@@ -29,6 +29,11 @@ static void log_handler(const char *function, const char *file, int line,
                     "CODE_LINE=%d", line, "CODE_FUNC=%s", function, "ERRNO=%d",
                     errno, "ERRNO_STR=%s", strerror(errno), NULL);
 
+#ifdef DEBUG
+    printf("[%s::%i | %s:%d] [%s] %s [errno (%d) %s]\n", tag, priority, file,
+           line, function, message, errno, strerror(errno));
+#endif
+
     free(message);
 }
 
