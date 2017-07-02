@@ -85,9 +85,9 @@ errno_t sql_create_ticks_table(struct sql_ctx *sql_ctx)
                 "    last REAL,"
                 "    buy REAL,"
                 "    sell REAL,"
-                "    updated NUMERIC"
+                "    updated NUMERIC,"
                 "    PRIMARY KEY(id ASC)"
-                ")";
+                ");";
 
     ret = sqlite3_exec(sql_ctx->db, sql, 0, 0, &err_msg);
     if (ret != SQLITE_OK) {
