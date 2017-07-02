@@ -3,8 +3,10 @@
 #include <unistd.h>
 
 #include "config.h"
+#include "src/conf/conf.h"
 #include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
+#include "src/sql/sql.h"
 #include "src/utils/daemon.h"
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
@@ -15,11 +17,11 @@ const char *argp_program_version = PACKAGE_STRING;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
 static char doc[] = "flip_collector | daemon for collecting data from crawler";
 
-static char args_doc[] = "<INPUT_IPC>";
+static char args_doc[] = "<CONFIG_FILE>";
 static struct argp_option options[] = { { 0 } };
 
 struct arguments {
-    char *input_ipc;
+    char *conf_file;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -31,7 +33,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
         if (state->arg_num > 1) {
             argp_usage(state);
         }
-        arguments->input_ipc = arg;
+        arguments->conf_file = arg;
         break;
 
     case ARGP_KEY_END:
@@ -53,12 +55,14 @@ int main(int argc, char **argv)
 {
     TALLOC_CTX *mem_ctx;
     struct arguments arguments;
+    struct collector_conf_ctx *conf_ctx;
     struct nbus_ctx *nbus_ctx;
+    struct sql_ctx *sql_ctx;
     struct string_ctx *chunk;
     struct btce_ticker *ticker_data;
     errno_t ret;
 
-    arguments.input_ipc = NULL;
+    arguments.conf_file = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
 #ifdef DEBUG
@@ -75,11 +79,23 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    ret = nbus_init_sub(mem_ctx, arguments.input_ipc, &nbus_ctx);
+    ret = parse_collector_conf(mem_ctx, arguments.conf_file, &conf_ctx);
     if (ret != EOK) {
-        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+        LOG(LOG_CRIT, "Critical failure: parse_collector_conf() failed.");
+        talloc_free(mem_ctx);
         exit(EXIT_FAILURE);
     }
+
+    ret = nbus_init_sub(mem_ctx, conf_ctx->socket, &nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: nbus_init_sub() failed.");
+        talloc_free(mem_ctx);
+        exit(EXIT_FAILURE);
+    }
+
+    // TODO
+    ret = sql_init(mem_ctx, conf_ctx->db, &sql_ctx);
+    ret = sql_create_ticks_table(sql_ctx);
 
     int i = 20;
     while (i > 0) {
@@ -114,6 +130,9 @@ int main(int argc, char **argv)
         sleep(1);
         i--;
     }
+
+    // TODO
+    ret = sql_close(sql_ctx);
 
     ret = nbus_close(nbus_ctx);
     if (ret != EOK) {

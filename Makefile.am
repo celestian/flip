@@ -40,6 +40,8 @@ flip_collector_SOURCES = \
 	src/utils/utils.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
+	src/conf/inih/ini.c \
+	src/conf/conf.c \
 	src/nbus/nbus.c \
 	src/json/jsmn/jsmn.c \
 	src/json/json.c \

@@ -21,6 +21,7 @@ nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
 * [libcurl] https://curl.haxx.se/libcurl/c/libcurl.html
 * [jsmn] https://github.com/zserge/jsmn
 * [sqlite] https://www.sqlite.org/
+* [inih] https://github.com/benhoyt/inih
 
 https://www.gnu.org/software/automake/manual/automake.html#A-Library
 
@@ -30,3 +31,8 @@ https://github.com/alisdair/jsmn-example
 
 ## Notice
 `src/json/jsmn` is a git submodule.
+`src/conf/inih` is a git submodule.
+
+```
+git submodule foreach git reset --hard
+```
