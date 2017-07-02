@@ -4,8 +4,9 @@ Forex Simulation Platform
 
 ## How to use
 ```
+reconfig --enable-debug
 ./flip_crawler ipc:///tmp/crawler_pubsub.ipc
-./flip_collector ipc:///tmp/crawler_pubsub.ipc
+./flip_collector ../config/flip_collector.conf
 ```
 
 ```
@@ -31,6 +32,7 @@ https://github.com/alisdair/jsmn-example
 
 ## Notice
 `src/json/jsmn` is a git submodule.
+
 `src/conf/inih` is a git submodule.
 
 ```
