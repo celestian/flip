@@ -93,7 +93,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    // TODO
+    // TODO: error checking
     ret = sql_init(mem_ctx, conf_ctx->db, &sql_ctx);
     ret = sql_create_ticks_table(sql_ctx);
 
@@ -111,7 +111,11 @@ int main(int argc, char **argv)
             continue;
         }
 
+        // TODO: error checking
         ret = parse_btc_e_ticker(mem_ctx, chunk->data, &ticker_data);
+
+        // TODO: error checking
+        ret = sql_insert_tick(sql_ctx, ticker_data);
 
         LOG(LOG_CRIT, "[%s : %d : h %f l %f a %f v %f vc %f l %f b %f s %f]\n",
             ticker_data->pair, ticker_data->updated, ticker_data->high,
@@ -125,13 +129,11 @@ int main(int argc, char **argv)
         talloc_free(chunk);
         chunk = NULL;
 
-        printf(">>> Z2 i=%d\n", i);
-
         sleep(1);
         i--;
     }
 
-    // TODO
+    // TODO: error checking
     ret = sql_close(sql_ctx);
 
     ret = nbus_close(nbus_ctx);

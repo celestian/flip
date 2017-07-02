@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <talloc.h>
 
+#include "src/json/btc-e_ticker.h"
 #include "src/utils/errors.h"
 
 struct sql_ctx;
@@ -14,5 +15,7 @@ errno_t sql_init(TALLOC_CTX *mem_ctx, const char *db_file_name,
 errno_t sql_close(struct sql_ctx *sql_ctx);
 
 errno_t sql_create_ticks_table(struct sql_ctx *sql_ctx);
+
+errno_t sql_insert_tick(struct sql_ctx *sql_ctx, struct btce_ticker *data);
 
 #endif /* __SQL_H__ */
