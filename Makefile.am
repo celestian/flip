@@ -25,7 +25,10 @@ flip_crawler_SOURCES = \
 	src/utils/daemon.c \
 	src/utils/logs.c \
 	src/nbus/nbus.c \
-	src/url/url.c
+	src/url/url.c \
+	src/json/jsmn/jsmn.c \
+	src/json/json.c \
+	src/json/btc-e_ticker.c
 flip_crawler_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \

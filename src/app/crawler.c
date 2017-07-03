@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "config.h"
+#include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
 #include "src/utils/daemon.h"
@@ -62,6 +63,8 @@ int main(int argc, char *argv[])
     struct url_conn_ctx *url_conn_ctx;
     struct nbus_ctx *nbus_ctx;
     struct string_ctx *chunk;
+    struct btce_ticker *ticker_data;
+    int updated = 0;
     errno_t ret;
 
     arguments.output_ipc = NULL;
@@ -106,16 +109,23 @@ int main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        /*
-        talloc_free(chunk->data);
-        chunk->data = talloc_asprintf(mem_ctx, "-- %d --", i);
-        */
-
-        ret = nbus_send(nbus_ctx, chunk->data, chunk->size);
+        ret = parse_btc_e_ticker(mem_ctx, chunk->data, &ticker_data);
         if (ret != EOK) {
             LOG(LOG_CRIT, "Critical failure: Not enough memory.");
             exit(EXIT_FAILURE);
         }
+
+        if (ticker_data->updated > updated) {
+            updated = ticker_data->updated;
+            ret = nbus_send(nbus_ctx, chunk->data, chunk->size);
+            if (ret != EOK) {
+                LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        talloc_free(ticker_data);
+        ticker_data = NULL;
 
         sleep(1);
         i--;
