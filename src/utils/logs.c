@@ -30,8 +30,8 @@ static void log_handler(const char *function, const char *file, int line,
                     errno, "ERRNO_STR=%s", strerror(errno), NULL);
 
 #ifdef DEBUG
-    printf("[%s::%i | %s:%d] [%s] %s [errno (%d) %s]\n", tag, priority, file,
-           line, function, message, errno, strerror(errno));
+    printf("[%s::%i | %s:%d] [%s] %s\n", tag, priority, file, line, function,
+           message);
 #endif
 
     free(message);
