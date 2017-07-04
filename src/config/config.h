@@ -7,6 +7,7 @@
 #include "src/utils/errors.h"
 
 struct config_ctx {
+    char *work_dir;
     char *socket;
     char *db;
 };

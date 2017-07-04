@@ -5,7 +5,7 @@ Forex Simulation Platform
 ## How to use
 ```
 reconfig --enable-debug
-./flip_crawler ipc:///tmp/crawler_pubsub.ipc
+./flip_crawler ../config/flip_collector.conf
 ./flip_collector ../config/flip_collector.conf
 ```
 

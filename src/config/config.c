@@ -20,6 +20,8 @@ static int collector_handler(void *data, const char *section, const char *name,
         config->socket = talloc_strdup(config, value);
     } else if (MATCH("base", "db")) {
         config->db = talloc_strdup(config, value);
+    } else if (MATCH("base", "work_directory")) {
+        config->work_dir = talloc_strdup(config, value);
     } else {
         return 0; /* unknown section/name, error */
     }

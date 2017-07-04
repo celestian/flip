@@ -6,9 +6,10 @@
 #include <unistd.h>
 
 #include "src/utils/daemon.h"
+#include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-void run_daemon(const char *identity_tag)
+void run_daemon(const char *identity_tag, char *work_dir)
 {
     pid_t pid = 0;
     pid_t sid = 0;
@@ -33,10 +34,10 @@ void run_daemon(const char *identity_tag)
         exit(EXIT_FAILURE);
     }
 
-    ret = chdir("/tmp");
+    ret = chdir(work_dir);
     if (ret < 0) {
-        LOG(LOG_CRIT, "Start of daemon '%s' failed. [chdir() [%i] [%s]]",
-            identity_tag, ret, strerror(ret));
+        LOG(LOG_CRIT, "Start of daemon '%s' failed: chdir('%s') [%d | %s]",
+            identity_tag, work_dir, errno, strerror(errno));
         exit(EXIT_FAILURE);
     }
 

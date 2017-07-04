@@ -65,14 +65,6 @@ int main(int argc, char **argv)
     arguments.conf_file = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-#ifdef DEBUG
-    log_init(APP_TAG);
-#else
-    run_daemon(APP_TAG);
-#endif
-
-    LOG(LOG_INFO, "Started...");
-
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
@@ -85,6 +77,12 @@ int main(int argc, char **argv)
         talloc_free(mem_ctx);
         exit(EXIT_FAILURE);
     }
+
+#ifdef DEBUG
+    log_init(APP_TAG);
+#else
+    run_daemon(APP_TAG, config_ctx->work_dir);
+#endif
 
     ret = nbus_init_sub(mem_ctx, config_ctx->socket, &nbus_ctx);
     if (ret != EOK) {
