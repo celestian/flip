@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "config.h"
+#include "src/config/config.h"
 #include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
@@ -22,11 +23,11 @@ const char *argp_program_version = PACKAGE_STRING;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
 static char doc[] = "flip_crawler | daemon for data crawling";
 
-static char args_doc[] = "<OUTPUT_IPC>";
+static char args_doc[] = "<CONFIG_FILE>";
 static struct argp_option options[] = { { 0 } };
 
 struct arguments {
-    char *output_ipc;
+    char *conf_file;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state)
@@ -38,7 +39,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
         if (state->arg_num > 1) {
             argp_usage(state);
         }
-        arguments->output_ipc = arg;
+        arguments->conf_file = arg;
         break;
 
     case ARGP_KEY_END:
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
 {
     TALLOC_CTX *mem_ctx;
     struct arguments arguments;
+    struct config_ctx *config_ctx;
     struct url_conn_ctx *url_conn_ctx;
     struct nbus_ctx *nbus_ctx;
     struct string_ctx *chunk;
@@ -67,7 +69,7 @@ int main(int argc, char *argv[])
     int updated = 0;
     errno_t ret;
 
-    arguments.output_ipc = NULL;
+    arguments.conf_file = NULL;
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
 #ifdef DEBUG
@@ -82,7 +84,14 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    ret = nbus_init_pub(mem_ctx, arguments.output_ipc, &nbus_ctx);
+    ret = parse_config(mem_ctx, arguments.conf_file, &config_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: parse_config() failed.");
+        talloc_free(mem_ctx);
+        exit(EXIT_FAILURE);
+    }
+
+    ret = nbus_init_pub(mem_ctx, config_ctx->socket, &nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);

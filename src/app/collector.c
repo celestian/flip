@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 #include "config.h"
-#include "src/conf/conf.h"
+#include "src/config/config.h"
 #include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
 #include "src/sql/sql.h"
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 {
     TALLOC_CTX *mem_ctx;
     struct arguments arguments;
-    struct collector_conf_ctx *conf_ctx;
+    struct config_ctx *config_ctx;
     struct nbus_ctx *nbus_ctx;
     struct sql_ctx *sql_ctx;
     struct string_ctx *chunk;
@@ -79,14 +79,14 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    ret = parse_collector_conf(mem_ctx, arguments.conf_file, &conf_ctx);
+    ret = parse_config(mem_ctx, arguments.conf_file, &config_ctx);
     if (ret != EOK) {
-        LOG(LOG_CRIT, "Critical failure: parse_collector_conf() failed.");
+        LOG(LOG_CRIT, "Critical failure: parse_config() failed.");
         talloc_free(mem_ctx);
         exit(EXIT_FAILURE);
     }
 
-    ret = nbus_init_sub(mem_ctx, conf_ctx->socket, &nbus_ctx);
+    ret = nbus_init_sub(mem_ctx, config_ctx->socket, &nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: nbus_init_sub() failed.");
         talloc_free(mem_ctx);
