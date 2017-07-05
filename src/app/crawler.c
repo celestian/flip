@@ -1,4 +1,3 @@
-#include <argp.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -12,6 +11,7 @@
 #include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
+#include "src/utils/args.h"
 #include "src/utils/daemon.h"
 #include "src/utils/data.h"
 #include "src/utils/errors.h"
@@ -19,48 +19,10 @@
 
 #define APP_TAG "flip_crawler"
 
-const char *argp_program_version = PACKAGE_STRING;
-const char *argp_program_bug_address = PACKAGE_BUGREPORT;
-static char doc[] = "flip_crawler | daemon for data crawling";
-
-static char args_doc[] = "<CONFIG_FILE>";
-static struct argp_option options[] = { { 0 } };
-
-struct arguments {
-    char *conf_file;
-};
-
-static error_t parse_opt(int key, char *arg, struct argp_state *state)
-{
-    struct arguments *arguments = state->input;
-
-    switch (key) {
-    case ARGP_KEY_ARG:
-        if (state->arg_num > 1) {
-            argp_usage(state);
-        }
-        arguments->conf_file = arg;
-        break;
-
-    case ARGP_KEY_END:
-        if (state->arg_num < 1) {
-            argp_usage(state);
-        }
-        break;
-
-    default:
-        return ARGP_ERR_UNKNOWN;
-    }
-
-    return 0;
-}
-
-static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
-
 int main(int argc, char *argv[])
 {
     TALLOC_CTX *mem_ctx;
-    struct arguments arguments;
+    struct worker_args_ctx *args;
     struct config_ctx *config_ctx;
     struct url_conn_ctx *url_conn_ctx;
     struct nbus_ctx *nbus_ctx;
@@ -69,19 +31,15 @@ int main(int argc, char *argv[])
     int updated = 0;
     errno_t ret;
 
-    arguments.conf_file = NULL;
-    argp_parse(&argp, argc, argv, 0, 0, &arguments);
-
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);
     }
 
-    ret = parse_config(mem_ctx, arguments.conf_file, &config_ctx);
+    ret = parse_worker_args(mem_ctx, argc, argv, CRAWLER, &args);
     if (ret != EOK) {
-        LOG(LOG_CRIT, "Critical failure: parse_config() failed.");
-        talloc_free(mem_ctx);
+        LOG(LOG_CRIT, "Critical failure: parse_worker_args() failed.");
         exit(EXIT_FAILURE);
     }
 

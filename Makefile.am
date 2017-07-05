@@ -23,6 +23,7 @@ bin_PROGRAMS = \
 flip_crawler_SOURCES = \
 	src/app/crawler.c \
 	src/utils/utils.c \
+	src/utils/args.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
 	src/config/inih/ini.c \
@@ -45,6 +46,7 @@ flip_crawler_LDFLAGS = \
 flip_collector_SOURCES = \
 	src/app/collector.c \
 	src/utils/utils.c \
+	src/utils/args.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
 	src/config/inih/ini.c \
