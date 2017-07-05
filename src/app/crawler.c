@@ -43,10 +43,8 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-#ifdef DEBUG
-    log_init(APP_TAG);
-#else
-    run_daemon(APP_TAG, config_ctx->work_dir);
+#ifndef DEBUG
+    run_daemon(args->pid_file);
 #endif
 
     ret = nbus_init_pub(mem_ctx, config_ctx->socket, &nbus_ctx);
