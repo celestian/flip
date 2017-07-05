@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     }
 
     // TODO: error checking
-    ret = sql_init(mem_ctx, conf_ctx->db, &sql_ctx);
+    ret = sql_init(mem_ctx, config_ctx->db, &sql_ctx);
     ret = sql_create_ticks_table(sql_ctx);
 
     int i = 20;
@@ -109,10 +109,10 @@ int main(int argc, char **argv)
             continue;
         }
 
-        // TODO: error checking
+        // TODO: error checking < 0.0001s
         ret = parse_btc_e_ticker(mem_ctx, chunk->data, &ticker_data);
 
-        // TODO: error checking
+        // TODO: error checking -- 0.0004s
         ret = sql_insert_tick(sql_ctx, ticker_data);
 
         LOG(LOG_CRIT, "[%s : %d : h %f l %f a %f v %f vc %f l %f b %f s %f]\n",
