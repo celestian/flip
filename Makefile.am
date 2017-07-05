@@ -11,7 +11,8 @@ endif
 AM_CPPFLAGS = \
 	$(TALLOC_CFLAGS) \
 	$(NANOMSG_CFLAGS) \
-	${LIBSYSTEMD_CFLAGS}
+	${LIBSYSTEMD_CFLAGS} \
+	${UUID_CFLAGS}
 
 
 bin_PROGRAMS = \
@@ -35,7 +36,8 @@ flip_crawler_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
 	${NANOMSG_LIBS} \
-	${CURL_LIBS}
+	${CURL_LIBS} \
+	${UUID_LIBS}
 flip_crawler_LDFLAGS = \
 	${CURL_CFLAGS}
 
@@ -56,6 +58,7 @@ flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
 	${NANOMSG_LIBS} \
-	${SQLITE3_LDFLAGS}
+	${SQLITE3_LDFLAGS} \
+	${UUID_LIBS}
 flip_collector_LDFLAGS = \
 	${SQLITE3_CFLAGS}
