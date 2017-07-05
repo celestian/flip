@@ -4,7 +4,11 @@
 #include <stdarg.h>
 #include <syslog.h>
 
+#include "src/utils/utils.h"
+
 /*
+    JOURNALD:
+    --------------------------------------------------------------------------
     Kernel constant   Level value   Meaning
     LOG_EMERG             0        System is unusable
     LOG_ALERT             1        Action must be taken immediately
@@ -22,7 +26,7 @@
                ##__VA_ARGS__);                                                 \
     } while (0);
 
-void log_init(const char *identity_tag);
+void log_init(enum daemon_type daemon_type);
 
 void log_fn(const char *function, const char *file, int line, int priority,
             const char *format, ...);

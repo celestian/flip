@@ -4,8 +4,7 @@
 #include <talloc.h>
 
 #include "src/utils/errors.h"
-
-enum worker_type { CRAWLER, COLLECTOR };
+#include "src/utils/utils.h"
 
 struct worker_args_ctx {
     char *identity_name;
@@ -14,7 +13,7 @@ struct worker_args_ctx {
 };
 
 errno_t parse_worker_args(TALLOC_CTX *mem_ctx, int argc, char *argv[],
-                          enum worker_type wtype,
+                          enum daemon_type daemon_type,
                           struct worker_args_ctx **_args);
 
 #endif /* __ARGS_H__ */

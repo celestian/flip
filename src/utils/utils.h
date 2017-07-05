@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+enum daemon_type { CRAWLER, COLLECTOR };
+
 bool is_file_exist(const char *file_name);
 
 #endif /* __UTIL_UTILS_H__ */

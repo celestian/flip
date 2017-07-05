@@ -17,8 +17,6 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-#define APP_TAG "flip_crawler"
-
 int main(int argc, char *argv[])
 {
     TALLOC_CTX *mem_ctx;
@@ -30,6 +28,8 @@ int main(int argc, char *argv[])
     struct btce_ticker *ticker_data;
     int updated = 0;
     errno_t ret;
+
+    log_init(CRAWLER);
 
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {

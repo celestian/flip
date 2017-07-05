@@ -5,6 +5,7 @@
 #include "src/utils/args.h"
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
+#include "src/utils/utils.h"
 
 #define CRAWLER_TAG "flip_crawler | daemon for data crawling"
 #define COLLECTOR_TAG "flip_collector | daemon for collecting data from crawler"
@@ -53,7 +54,7 @@ done:
 }
 
 errno_t parse_worker_args(TALLOC_CTX *mem_ctx, int argc, char *argv[],
-                          enum worker_type wtype,
+                          enum daemon_type daemon_type,
                           struct worker_args_ctx **_args)
 {
     TALLOC_CTX *tmp_ctx;
@@ -80,7 +81,7 @@ errno_t parse_worker_args(TALLOC_CTX *mem_ctx, int argc, char *argv[],
     args->identity_name = NULL;
     args->root_ipc = NULL;
 
-    switch (wtype) {
+    switch (daemon_type) {
     case CRAWLER:
         ret = argp_parse(&argp[0], argc, argv, 0, 0, &args);
         if (ret != EOK) {

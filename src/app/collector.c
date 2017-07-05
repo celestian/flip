@@ -11,8 +11,6 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-#define APP_TAG "flip_collector"
-
 int main(int argc, char **argv)
 {
     TALLOC_CTX *mem_ctx;
@@ -23,6 +21,8 @@ int main(int argc, char **argv)
     struct string_ctx *chunk;
     struct btce_ticker *ticker_data;
     errno_t ret;
+
+    log_init(COLLECTOR);
 
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
