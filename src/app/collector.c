@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <talloc.h>
+
 #include "config.h"
-#include "src/config/config.h"
 #include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
 #include "src/sql/sql.h"
@@ -15,7 +16,6 @@ int main(int argc, char **argv)
 {
     TALLOC_CTX *mem_ctx;
     struct worker_args_ctx *args;
-    struct config_ctx *config_ctx;
     struct nbus_ctx *nbus_ctx;
     struct sql_ctx *sql_ctx;
     struct string_ctx *chunk;
@@ -40,14 +40,18 @@ int main(int argc, char **argv)
     run_daemon(args->pid_file);
 #endif
 
-    ret = nbus_init_sub(mem_ctx, config_ctx->socket, &nbus_ctx);
+    exit(EXIT_SUCCESS);
+
+    // TODO zde nema byt args->root_ipc !!
+    ret = nbus_init_sub(mem_ctx, args->root_ipc, &nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: nbus_init_sub() failed.");
         talloc_free(mem_ctx);
         exit(EXIT_FAILURE);
     }
 
-    ret = sql_init(mem_ctx, config_ctx->db, &sql_ctx);
+    // TODO zde nema byt args->root_ipc !!
+    ret = sql_init(mem_ctx, args->root_ipc, &sql_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: sql_init() failed.");
         talloc_free(mem_ctx);

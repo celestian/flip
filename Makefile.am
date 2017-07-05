@@ -26,8 +26,6 @@ flip_crawler_SOURCES = \
 	src/utils/args.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
-	src/config/inih/ini.c \
-	src/config/config.c \
 	src/nbus/nbus.c \
 	src/url/url.c \
 	src/json/jsmn/jsmn.c \
@@ -49,8 +47,6 @@ flip_collector_SOURCES = \
 	src/utils/args.c \
 	src/utils/daemon.c \
 	src/utils/logs.c \
-	src/config/inih/ini.c \
-	src/config/config.c \
 	src/nbus/nbus.c \
 	src/json/jsmn/jsmn.c \
 	src/json/json.c \
