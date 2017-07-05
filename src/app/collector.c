@@ -91,9 +91,19 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    // TODO: error checking
     ret = sql_init(mem_ctx, config_ctx->db, &sql_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: sql_init() failed.");
+        talloc_free(mem_ctx);
+        exit(EXIT_FAILURE);
+    }
+
     ret = sql_create_ticks_table(sql_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: sql_create_ticks_table() failed.");
+        talloc_free(mem_ctx);
+        exit(EXIT_FAILURE);
+    }
 
     int i = 20;
     while (i > 0) {
@@ -109,17 +119,17 @@ int main(int argc, char **argv)
             continue;
         }
 
-        // TODO: error checking < 0.0001s
         ret = parse_btc_e_ticker(mem_ctx, chunk->data, &ticker_data);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "Critical failure: parse_btc_e_ticker() failed.");
+            exit(EXIT_FAILURE);
+        }
 
-        // TODO: error checking -- 0.0004s
         ret = sql_insert_tick(sql_ctx, ticker_data);
-
-        LOG(LOG_CRIT, "[%s : %d : h %f l %f a %f v %f vc %f l %f b %f s %f]\n",
-            ticker_data->pair, ticker_data->updated, ticker_data->high,
-            ticker_data->low, ticker_data->avg, ticker_data->vol,
-            ticker_data->vol_cur, ticker_data->last, ticker_data->buy,
-            ticker_data->sell);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "Critical failure: sql_insert_tick() failed.");
+            exit(EXIT_FAILURE);
+        }
 
         talloc_free(ticker_data);
         ticker_data = NULL;
@@ -131,8 +141,11 @@ int main(int argc, char **argv)
         i--;
     }
 
-    // TODO: error checking
     ret = sql_close(sql_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: sql_close() failed.");
+        exit(EXIT_FAILURE);
+    }
 
     ret = nbus_close(nbus_ctx);
     if (ret != EOK) {
