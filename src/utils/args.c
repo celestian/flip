@@ -20,50 +20,48 @@ static struct argp_option options[] = { { 0 } };
 static error_t flipd_parse_opt(int key, char *arg, struct argp_state *state)
 {
     struct flipd_args_ctx *args = state->input;
-    errno_t ret;
 
     switch (key) {
     case ARGP_KEY_ARG:
         if (state->arg_num > 1) {
             argp_usage(state);
         }
-        args->config_file = arg;
+
+        if (state->arg_num == 0) {
+            args->config_file = arg;
+        }
+
         break;
 
     case ARGP_KEY_END:
         if (state->arg_num < 1) {
             argp_usage(state);
         }
+
         break;
 
     default:
-        ret = ARGP_ERR_UNKNOWN;
-        goto done;
+        return ARGP_ERR_UNKNOWN;
     }
 
-    ret = EOK;
-
-done:
-    return ret;
+    return 0;
 }
 
 static error_t worker_parse_opt(int key, char *arg, struct argp_state *state)
 {
     struct worker_args_ctx *args = state->input;
-    errno_t ret;
 
     switch (key) {
     case ARGP_KEY_ARG:
         if (state->arg_num > 3) {
             argp_usage(state);
         }
+
         if (state->arg_num == 0) {
             args->identity_name = arg;
-        }
-        if (state->arg_num == 1) {
+        } else if (state->arg_num == 1) {
             args->pid_file = arg;
-        }
-        if (state->arg_num == 2) {
+        } else if (state->arg_num == 2) {
             args->root_ipc = arg;
         }
         break;
@@ -75,40 +73,22 @@ static error_t worker_parse_opt(int key, char *arg, struct argp_state *state)
         break;
 
     default:
-        ret = ARGP_ERR_UNKNOWN;
-        goto done;
+        return ARGP_ERR_UNKNOWN;
     }
 
-    ret = EOK;
-
-done:
-    return ret;
+    return 0;
 }
 
 errno_t parse_flipd_args(TALLOC_CTX *mem_ctx, int argc, char *argv[],
                          struct flipd_args_ctx **_args)
 {
-    TALLOC_CTX *tmp_ctx;
-    struct flipd_args_ctx *args;
+    struct flipd_args_ctx args;
     errno_t ret;
 
     struct argp argp
         = { options, flipd_parse_opt, flipd_args_doc, FLIPD_TAG, 0, 0, 0 };
 
-    tmp_ctx = talloc_new(NULL);
-    if (tmp_ctx == NULL) {
-        LOG(LOG_ERR, "talloc_new() failed.");
-        return ENOMEM;
-    }
-
-    args = talloc(tmp_ctx, struct flipd_args_ctx);
-    if (args == NULL) {
-        LOG(LOG_ERR, "talloc_new() failed.");
-        ret = ENOMEM;
-        goto done;
-    }
-
-    args->config_file = NULL;
+    args.config_file = NULL;
 
     ret = argp_parse(&argp, argc, argv, 0, 0, &args);
     if (ret != EOK) {
@@ -116,11 +96,10 @@ errno_t parse_flipd_args(TALLOC_CTX *mem_ctx, int argc, char *argv[],
         goto done;
     }
 
-    *_args = talloc_steal(mem_ctx, args);
+    *_args = talloc_memdup(mem_ctx, &args, sizeof(args));
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
     return ret;
 }
 
@@ -128,30 +107,16 @@ errno_t parse_worker_args(TALLOC_CTX *mem_ctx, int argc, char *argv[],
                           enum daemon_type daemon_type,
                           struct worker_args_ctx **_args)
 {
-    TALLOC_CTX *tmp_ctx;
-    struct worker_args_ctx *args;
+    struct worker_args_ctx args;
     errno_t ret;
 
     struct argp argp[]
         = { { options, worker_parse_opt, args_doc, CRAWLER_TAG, 0, 0, 0 },
             { options, worker_parse_opt, args_doc, COLLECTOR_TAG, 0, 0, 0 } };
 
-    tmp_ctx = talloc_new(NULL);
-    if (tmp_ctx == NULL) {
-        LOG(LOG_ERR, "talloc_new() failed.");
-        return ENOMEM;
-    }
-
-    args = talloc(tmp_ctx, struct worker_args_ctx);
-    if (args == NULL) {
-        LOG(LOG_ERR, "talloc_new() failed.");
-        ret = ENOMEM;
-        goto done;
-    }
-
-    args->identity_name = NULL;
-    args->pid_file = NULL;
-    args->root_ipc = NULL;
+    args.identity_name = NULL;
+    args.pid_file = NULL;
+    args.root_ipc = NULL;
 
     switch (daemon_type) {
     case CRAWLER:
@@ -173,14 +138,13 @@ errno_t parse_worker_args(TALLOC_CTX *mem_ctx, int argc, char *argv[],
         break;
 
     default:
-        ret = ARGP_ERR_UNKNOWN;
+        ret = EINVAL;
         goto done;
     }
 
-    *_args = talloc_steal(mem_ctx, args);
+    *_args = talloc_memdup(mem_ctx, &args, sizeof(args));
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
     return ret;
 }

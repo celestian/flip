@@ -8,6 +8,7 @@
 
 #include <talloc.h>
 
+#include "src/msg/msg.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
 #include "src/utils/args.h"
@@ -19,34 +20,103 @@
 
 int main(int argc, char *argv[])
 {
-    TALLOC_CTX *mem_ctx;
+    TALLOC_CTX *mem_ctx = NULL;
     struct flipd_args_ctx *args;
     struct config_ctx *config_ctx;
+    struct nbus_ctx *io_nbus_ctx = NULL;
+    struct nbus_ctx *wd_nbus_ctx = NULL;
     errno_t ret;
 
-    log_init(CRAWLER);
+    log_init(FLIPD);
 
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
-        exit(EXIT_FAILURE);
+        ret = EXIT_FAILURE;
+        goto done;
     }
 
     ret = parse_flipd_args(mem_ctx, argc, argv, &args);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: parse_flipd_args() failed.");
-        exit(EXIT_FAILURE);
+        ret = EXIT_FAILURE;
+        goto done;
     }
 
     ret = parse_flipd_config(mem_ctx, args->config_file, &config_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: parse_flipd_config() failed.");
-        exit(EXIT_FAILURE);
+        ret = EXIT_FAILURE;
+        goto done;
     }
 
 #ifndef DEBUG
     run_daemon(config_ctx->pid_file);
 #endif
 
-    exit(EXIT_SUCCESS);
+    ret = nbus_init_pair(mem_ctx, config_ctx->io_socket, &io_nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "nbus_init_pair() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
+
+    // Start crawler daemon
+    char *wd_identity_name = "alpha";
+    char *wd_pid_file = "/tmp/flip_crawler_alpha.pid";
+    char *wd_root_ipc = "ipc:///tmp/root_flip_crawler_alpha.ipc";
+
+    ret = nbus_init_pair(mem_ctx, wd_root_ipc, &wd_nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "nbus_init_pair() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
+
+    char *command = talloc_asprintf(
+        mem_ctx, "/home/celestian/Projects/flip/x86_64/flip_crawler %s %s %s",
+        wd_identity_name, wd_pid_file, wd_root_ipc);
+
+    ret = system(command);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "system() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
+    talloc_free(command);
+
+    int i = 100;
+    while (i > 0) {
+
+        i--;
+        sleep(1);
+    }
+
+    ret = EXIT_SUCCESS;
+
+done:
+
+    stop_daemon();
+
+    if (io_nbus_ctx != NULL) {
+        ret = nbus_close(io_nbus_ctx);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "nbus_close() failed.");
+            ret = EXIT_FAILURE;
+        }
+    }
+
+    if (wd_nbus_ctx != NULL) {
+        ret = nbus_close(wd_nbus_ctx);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "nbus_close() failed.");
+            ret = EXIT_FAILURE;
+        }
+    }
+
+    if (mem_ctx != NULL) {
+        talloc_free(mem_ctx);
+    }
+
+    exit(ret);
 }

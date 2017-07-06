@@ -52,12 +52,14 @@ static errno_t remove_pid()
 {
     int ret;
 
-    ret = unlink(static_variable_pid_file);
-    if (ret != 0) {
-        LOG(LOG_CRIT, "unlink('%s') failed. [%d | %s]",
-            static_variable_pid_file, errno, strerror(errno));
-        ret = EIO;
-        goto done;
+    if (is_file_exist(static_variable_pid_file)) {
+        ret = unlink(static_variable_pid_file);
+        if (ret != 0) {
+            LOG(LOG_CRIT, "unlink('%s') failed. [%d | %s]",
+                static_variable_pid_file, errno, strerror(errno));
+            ret = EIO;
+            goto done;
+        }
     }
 
     ret = EOK;
@@ -104,9 +106,11 @@ void run_daemon(char *pid_file)
         exit(EXIT_FAILURE);
     }
 
+#ifndef DEBUG
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
+#endif
 }
 
 void stop_daemon()
@@ -115,6 +119,6 @@ void stop_daemon()
 
     ret = remove_pid();
     if (ret != EOK) {
-        LOG(LOG_CRIT, "Daemon crashed: remove_pid()");
+        LOG(LOG_CRIT, "remove_pid() failed.");
     }
 }

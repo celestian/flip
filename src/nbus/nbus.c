@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include <nanomsg/nn.h>
+#include <nanomsg/pair.h>
 #include <nanomsg/pubsub.h>
 #include <talloc.h>
 
@@ -133,6 +134,12 @@ static errno_t nbus_init_pubsub(TALLOC_CTX *mem_ctx, const char *url,
 done:
     talloc_free(tmp_ctx);
     return ret;
+}
+
+errno_t nbus_init_pair(TALLOC_CTX *mem_ctx, const char *url,
+                       struct nbus_ctx **_nbus_ctx)
+{
+    return nbus_init_pubsub(mem_ctx, url, NN_PAIR, _nbus_ctx);
 }
 
 errno_t nbus_init_pub(TALLOC_CTX *mem_ctx, const char *url,

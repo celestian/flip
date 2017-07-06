@@ -46,6 +46,8 @@ int main(int argc, char *argv[])
     run_daemon(args->pid_file);
 #endif
 
+    sleep(100);
+
     exit(EXIT_SUCCESS);
 
     // TODO zde nema byt args->root_ipc !!

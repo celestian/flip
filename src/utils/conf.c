@@ -12,8 +12,8 @@
 
 #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
 
-static int collector_handler(void *data, const char *section, const char *name,
-                             const char *value)
+static int flipd_handler(void *data, const char *section, const char *name,
+                         const char *value)
 {
     struct config_ctx *config = (struct config_ctx *)data;
 
@@ -26,6 +26,7 @@ static int collector_handler(void *data, const char *section, const char *name,
     } else {
         LOG(LOG_INFO, "Unknown configuration: %s.%s = '%s'", section, name,
             value);
+        return 0;
     }
 
     return 1;
@@ -51,9 +52,9 @@ errno_t parse_flipd_config(TALLOC_CTX *mem_ctx, const char *filename,
         goto done;
     }
 
-    ret = ini_parse(filename, collector_handler, (void *)config_ctx);
+    ret = ini_parse(filename, flipd_handler, (void *)config_ctx);
     if (ret != EOK) {
-        LOG(LOG_ERR, "ini_parse() failed.");
+        LOG(LOG_ERR, "ini_parse() failed. [%d] %s", ret, filename);
         ret = EINVAL;
         goto done;
     }

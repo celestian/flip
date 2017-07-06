@@ -31,7 +31,8 @@ flipd_SOURCES = \
 	src/utils/logs.c \
 	src/nbus/nbus.c \
 	src/json/jsmn/jsmn.c \
-	src/json/json.c
+	src/json/json.c \
+	src/msg/msg.c
 flipd_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
@@ -49,7 +50,8 @@ flip_crawler_SOURCES = \
 	src/url/url.c \
 	src/json/jsmn/jsmn.c \
 	src/json/json.c \
-	src/json/btc-e_ticker.c
+	src/json/btc-e_ticker.c \
+	src/msg/msg.c
 flip_crawler_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \

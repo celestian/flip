@@ -9,6 +9,9 @@
 
 struct nbus_ctx;
 
+errno_t nbus_init_pair(TALLOC_CTX *mem_ctx, const char *url,
+                       struct nbus_ctx **_nbus_ctx);
+
 errno_t nbus_init_pub(TALLOC_CTX *mem_ctx, const char *url,
                       struct nbus_ctx **_nbus_ctx);
 
