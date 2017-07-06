@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <talloc.h>
 
-#include "src/config/config.h"
-#include "src/config/inih/ini.h"
+#include "src/utils/conf.h"
 #include "src/utils/errors.h"
+#include "src/utils/inih/ini.h"
 #include "src/utils/logs.h"
 
 #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
@@ -16,21 +17,20 @@ static int collector_handler(void *data, const char *section, const char *name,
 {
     struct config_ctx *config = (struct config_ctx *)data;
 
-    if (MATCH("base", "socket")) {
-        config->socket = talloc_strdup(config, value);
-    } else if (MATCH("base", "db")) {
-        config->db = talloc_strdup(config, value);
-    } else if (MATCH("base", "work_directory")) {
+    if (MATCH("base", "work_dir")) {
         config->work_dir = talloc_strdup(config, value);
+    } else if (MATCH("base", "io_socket")) {
+        config->io_socket = talloc_strdup(config, value);
     } else {
-        return 0; /* unknown section/name, error */
+        LOG(LOG_INFO, "Unknown configuration: %s.%s = '%s'", section, name,
+            value);
     }
 
     return 1;
 }
 
-errno_t parse_config(TALLOC_CTX *mem_ctx, const char *filename,
-                     struct config_ctx **_config_ctx)
+errno_t parse_flipd_config(TALLOC_CTX *mem_ctx, const char *filename,
+                           struct config_ctx **_config_ctx)
 {
     TALLOC_CTX *tmp_ctx;
     struct config_ctx *config_ctx = NULL;

@@ -8,7 +8,6 @@
 
 #include <talloc.h>
 
-#include "config.h"
 #include "src/json/btc-e_ticker.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"

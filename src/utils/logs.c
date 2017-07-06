@@ -11,6 +11,7 @@
 #include "src/utils/logs.h"
 
 #define DEFAULT_APP_TAG "flip"
+#define FLIPD_APP_TAG "flipd"
 #define CRAWLER_APP_TAG "flip_crawler"
 #define COLLECTOR_APP_TAG "flip_collector"
 
@@ -45,6 +46,9 @@ static void log_handler(const char *function, const char *file, int line,
 void log_init(enum daemon_type daemon_type)
 {
     switch (daemon_type) {
+    case FLIPD:
+        static_variable_app_tag = FLIPD_APP_TAG;
+        break;
     case CRAWLER:
         static_variable_app_tag = CRAWLER_APP_TAG;
         break;

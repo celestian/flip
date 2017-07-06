@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-enum daemon_type { CRAWLER, COLLECTOR };
+enum daemon_type { FLIPD, CRAWLER, COLLECTOR };
 
 bool is_file_exist(const char *file_name);
 

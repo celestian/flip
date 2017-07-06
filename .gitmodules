@@ -2,5 +2,5 @@
 	path = src/json/jsmn
 	url = https://github.com/zserge/jsmn.git
 [submodule "src/conf/inih"]
-	path = src/config/inih
+	path = src/utils/inih
 	url = https://github.com/benhoyt/inih.git

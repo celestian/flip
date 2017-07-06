@@ -2,17 +2,17 @@
 #define __CONF_H__
 
 #include <stddef.h>
+
 #include <talloc.h>
 
 #include "src/utils/errors.h"
 
 struct config_ctx {
     char *work_dir;
-    char *socket;
-    char *db;
+    char *io_socket;
 };
 
-errno_t parse_config(TALLOC_CTX *mem_ctx, const char *filename,
-                     struct config_ctx **_config_ctx);
+errno_t parse_flipd_config(TALLOC_CTX *mem_ctx, const char *filename,
+                           struct config_ctx **_config_ctx);
 
 #endif /* __CONF_H__ */

@@ -16,8 +16,27 @@ AM_CPPFLAGS = \
 
 
 bin_PROGRAMS = \
+	flipd \
 	flip_crawler \
 	flip_collector
+
+
+flipd_SOURCES = \
+	src/app/flipd.c \
+	src/utils/inih/ini.c \
+	src/utils/conf.c \
+	src/utils/utils.c \
+	src/utils/args.c \
+	src/utils/daemon.c \
+	src/utils/logs.c \
+	src/nbus/nbus.c \
+	src/json/jsmn/jsmn.c \
+	src/json/json.c
+flipd_LDADD = \
+	${LIBSYSTEMD_LIBS} \
+	${TALLOC_LIBS} \
+	${NANOMSG_LIBS} \
+	${UUID_LIBS}
 
 
 flip_crawler_SOURCES = \
