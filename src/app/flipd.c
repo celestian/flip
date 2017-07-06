@@ -20,6 +20,7 @@
 int main(int argc, char *argv[])
 {
     TALLOC_CTX *mem_ctx;
+    struct flipd_args_ctx *args;
     struct config_ctx *config_ctx;
     errno_t ret;
 
@@ -31,12 +32,21 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    ret = parse_flipd_config(mem_ctx, "This must be read from command line",
-                             &config_ctx);
+    ret = parse_flipd_args(mem_ctx, argc, argv, &args);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: parse_flipd_args() failed.");
+        exit(EXIT_FAILURE);
+    }
+
+    ret = parse_flipd_config(mem_ctx, args->config_file, &config_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: parse_flipd_config() failed.");
         exit(EXIT_FAILURE);
     }
+
+#ifndef DEBUG
+    run_daemon(config_ctx->pid_file);
+#endif
 
     exit(EXIT_SUCCESS);
 }

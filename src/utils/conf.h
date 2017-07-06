@@ -9,6 +9,7 @@
 
 struct config_ctx {
     char *work_dir;
+    char *pid_file;
     char *io_socket;
 };
 

@@ -19,6 +19,8 @@ static int collector_handler(void *data, const char *section, const char *name,
 
     if (MATCH("base", "work_dir")) {
         config->work_dir = talloc_strdup(config, value);
+    } else if (MATCH("base", "pid_file")) {
+        config->pid_file = talloc_strdup(config, value);
     } else if (MATCH("base", "io_socket")) {
         config->io_socket = talloc_strdup(config, value);
     } else {
