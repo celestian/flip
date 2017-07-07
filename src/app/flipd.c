@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     }
     talloc_free(command);
 
-    int i = 100;
+    int i = 30;
     while (i > 0) {
 
         i--;

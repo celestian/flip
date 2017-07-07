@@ -72,6 +72,7 @@ flip_collector_SOURCES = \
 	src/json/jsmn/jsmn.c \
 	src/json/json.c \
 	src/json/btc-e_ticker.c \
+	src/msg/msg.c \
 	src/sql/sql.c
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \

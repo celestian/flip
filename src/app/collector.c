@@ -4,6 +4,7 @@
 #include <talloc.h>
 
 #include "src/json/btc-e_ticker.h"
+#include "src/msg/msg.h"
 #include "src/nbus/nbus.h"
 #include "src/sql/sql.h"
 #include "src/utils/args.h"
@@ -13,8 +14,9 @@
 
 int main(int argc, char **argv)
 {
-    TALLOC_CTX *mem_ctx;
+    TALLOC_CTX *mem_ctx = NULL;
     struct worker_args_ctx *args;
+    struct nbus_ctx *root_nbus_ctx = NULL;
     struct nbus_ctx *nbus_ctx;
     struct sql_ctx *sql_ctx;
     struct string_ctx *chunk;
@@ -26,20 +28,31 @@ int main(int argc, char **argv)
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
-        exit(EXIT_FAILURE);
+        ret = EXIT_FAILURE;
+        goto done;
     }
 
     ret = parse_worker_args(mem_ctx, argc, argv, COLLECTOR, &args);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: parse_worker_args() failed.");
-        exit(EXIT_FAILURE);
+        ret = EXIT_FAILURE;
+        goto done;
     }
 
 #ifndef DEBUG
     run_daemon(args->pid_file);
 #endif
 
-    exit(EXIT_SUCCESS);
+    ret = nbus_init_pair(mem_ctx, args->root_ipc, &root_nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "nbus_init_pair() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
+
+    sleep(30);
+    ret = EXIT_SUCCESS;
+    goto done;
 
     // TODO zde nema byt args->root_ipc !!
     ret = nbus_init_sub(mem_ctx, args->root_ipc, &nbus_ctx);
@@ -112,7 +125,22 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    talloc_free(mem_ctx);
+    ret = EXIT_SUCCESS;
 
-    exit(EXIT_SUCCESS);
+done:
+    stop_daemon();
+
+    if (root_nbus_ctx != NULL) {
+        ret = nbus_close(root_nbus_ctx);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "nbus_close() failed.");
+            ret = EXIT_FAILURE;
+        }
+    }
+
+    if (mem_ctx != NULL) {
+        talloc_free(mem_ctx);
+    }
+
+    exit(ret);
 }

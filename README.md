@@ -7,6 +7,8 @@ Forex Simulation Platform
 reconfig --enable-debug
 ./flip_crawler ../config/flip_collector.conf
 ./flip_collector ../config/flip_collector.conf
+
+make clean && chmake && ./flipd /home/celestian/Projects/flip/example/flip.conf
 ```
 
 ```

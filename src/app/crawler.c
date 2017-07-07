@@ -9,6 +9,7 @@
 #include <talloc.h>
 
 #include "src/json/btc-e_ticker.h"
+#include "src/msg/msg.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
 #include "src/utils/args.h"
@@ -19,9 +20,11 @@
 
 int main(int argc, char *argv[])
 {
-    TALLOC_CTX *mem_ctx;
+    TALLOC_CTX *mem_ctx = NULL;
     struct worker_args_ctx *args;
     struct url_conn_ctx *url_conn_ctx;
+    struct nbus_ctx *root_nbus_ctx = NULL;
+    struct msg_ctx *msg = NULL;
     struct nbus_ctx *nbus_ctx;
     struct string_ctx *chunk;
     struct btce_ticker *ticker_data;
@@ -33,22 +36,63 @@ int main(int argc, char *argv[])
     mem_ctx = talloc_new(NULL);
     if (mem_ctx == NULL) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
-        exit(EXIT_FAILURE);
+        ret = EXIT_FAILURE;
+        goto done;
     }
 
     ret = parse_worker_args(mem_ctx, argc, argv, CRAWLER, &args);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: parse_worker_args() failed.");
-        exit(EXIT_FAILURE);
+        ret = EXIT_FAILURE;
+        goto done;
     }
 
 #ifndef DEBUG
     run_daemon(args->pid_file);
 #endif
 
-    sleep(100);
+    ret = nbus_init_pair(mem_ctx, args->root_ipc, &root_nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "nbus_init_pair() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
 
-    exit(EXIT_SUCCESS);
+    // -------------------------------------------------------------------------
+
+    struct string_ctx *serialized_msg = NULL;
+
+    ret = create_message(mem_ctx, args->identity_name, "root",
+                         CRAWLER_ASK_FOR_CONFIGURATION, NULL, &msg);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "create_message() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
+
+    ret = serialize_message(mem_ctx, msg, &serialized_msg);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "serialize_message() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
+
+    LOG(LOG_CRIT, ">>> %s", serialized_msg->data);
+
+    sleep(30);
+    ret = EXIT_SUCCESS;
+    goto done;
+
+    /*
+        ret = nbus_send(root_nbus_ctx, chunk->data, chunk->size);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "nbus_send() failed.");
+            ret = EXIT_FAILURE;
+            goto done;
+        }
+    */
+
+    // -------------------------------------------------------------------------
 
     // TODO zde nema byt args->root_ipc !!
     ret = nbus_init_pub(mem_ctx, args->root_ipc, &nbus_ctx);
@@ -110,7 +154,22 @@ int main(int argc, char *argv[])
 
     url_global_cleanup();
 
-    talloc_free(mem_ctx);
+    ret = EXIT_SUCCESS;
 
-    exit(EXIT_SUCCESS);
+done:
+    stop_daemon();
+
+    if (root_nbus_ctx != NULL) {
+        ret = nbus_close(root_nbus_ctx);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "nbus_close() failed.");
+            ret = EXIT_FAILURE;
+        }
+    }
+
+    if (mem_ctx != NULL) {
+        talloc_free(mem_ctx);
+    }
+
+    exit(ret);
 }
