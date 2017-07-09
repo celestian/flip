@@ -257,3 +257,5 @@ done:
     talloc_free(tmp_ctx);
     return ret;
 }
+
+int nbus_get_sock_fd(struct nbus_ctx *nbus_ctx) { return nbus_ctx->sock_fd; }

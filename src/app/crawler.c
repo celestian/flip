@@ -9,7 +9,7 @@
 #include <talloc.h>
 
 #include "src/json/btc-e_ticker.h"
-#include "src/msg/msg.h"
+#include "src/module/common_daemon.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
 #include "src/utils/args.h"
@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
     struct worker_args_ctx *args;
     struct url_conn_ctx *url_conn_ctx;
     struct nbus_ctx *root_nbus_ctx = NULL;
-    struct msg_ctx *msg = NULL;
     struct nbus_ctx *nbus_ctx;
     struct string_ctx *chunk;
     struct btce_ticker *ticker_data;
@@ -60,37 +59,19 @@ int main(int argc, char *argv[])
 
     // -------------------------------------------------------------------------
 
-    struct string_ctx *serialized_msg = NULL;
+    char *config_json;
 
-    ret = create_message(mem_ctx, args->identity_name, "root",
-                         CRAWLER_ASK_FOR_CONFIGURATION, NULL, &msg);
+    ret = get_config_from_root_daemon(
+        mem_ctx, root_nbus_ctx, args->identity_name, CRAWLER, &config_json);
     if (ret != EOK) {
-        LOG(LOG_CRIT, "create_message() failed.");
+        LOG(LOG_CRIT, "get_config_from_root_daemon() failed.");
         ret = EXIT_FAILURE;
         goto done;
     }
-
-    ret = serialize_message(mem_ctx, msg, &serialized_msg);
-    if (ret != EOK) {
-        LOG(LOG_CRIT, "serialize_message() failed.");
-        ret = EXIT_FAILURE;
-        goto done;
-    }
-
-    LOG(LOG_CRIT, ">>> %s", serialized_msg->data);
 
     sleep(30);
     ret = EXIT_SUCCESS;
     goto done;
-
-    /*
-        ret = nbus_send(root_nbus_ctx, chunk->data, chunk->size);
-        if (ret != EOK) {
-            LOG(LOG_CRIT, "nbus_send() failed.");
-            ret = EXIT_FAILURE;
-            goto done;
-        }
-    */
 
     // -------------------------------------------------------------------------
 

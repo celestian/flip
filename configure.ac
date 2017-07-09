@@ -39,6 +39,7 @@ AX_CHECK_COMPILE_FLAG([-std=c11], [
 
 # Checks for libraries.
 PKG_CHECK_MODULES([TALLOC], [talloc])
+PKG_CHECK_MODULES([TEVENT], [tevent])
 PKG_CHECK_MODULES([NANOMSG], [nanomsg])
 PKG_CHECK_MODULES([LIBSYSTEMD], [libsystemd])
 PKG_CHECK_MODULES([UUID], [uuid])

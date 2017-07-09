@@ -7,9 +7,9 @@
 #include "src/utils/errors.h"
 #include "src/utils/logs.h"
 
-errno_t create_message(TALLOC_CTX *mem_ctx, char *sender, char *recepient,
-                       enum message_type message_type, void *data,
-                       struct msg_ctx **_msg)
+errno_t create_message(TALLOC_CTX *mem_ctx, const char *sender,
+                       const char *recepient, enum message_type message_type,
+                       void *data, struct msg_ctx **_msg)
 {
     TALLOC_CTX *tmp_ctx;
     struct msg_ctx *msg;

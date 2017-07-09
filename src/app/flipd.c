@@ -8,6 +8,7 @@
 
 #include <talloc.h>
 
+#include "src/module/flipd/daemon_handler.h"
 #include "src/msg/msg.h"
 #include "src/nbus/nbus.h"
 #include "src/url/url.h"
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
     struct config_ctx *config_ctx;
     struct nbus_ctx *io_nbus_ctx = NULL;
     struct nbus_ctx *wd_nbus_ctx = NULL;
+    struct string_ctx *chunk;
     errno_t ret;
 
     log_init(FLIPD);
@@ -85,8 +87,35 @@ int main(int argc, char *argv[])
     }
     talloc_free(command);
 
+    // Waiting for ask for configuration ---------------------------------------
+
+    ret = get_answer(mem_ctx, wd_nbus_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "get_answer() failed.");
+        ret = EXIT_FAILURE;
+        goto done;
+    }
+
+    ret = EXIT_SUCCESS;
+    goto done;
+    // -------------------------------------------------------------------------
+
     int i = 30;
     while (i > 0) {
+
+        ret = nbus_recieve(mem_ctx, wd_nbus_ctx, &chunk);
+        if (ret != EOK && ret != EAGAIN) {
+            LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
+            talloc_free(mem_ctx);
+            exit(EXIT_FAILURE);
+        }
+        if (ret == EAGAIN) {
+            sleep(1);
+            i--;
+            continue;
+        }
+
+        LOG(LOG_CRIT, ">>> received: %s", chunk->data);
 
         i--;
         sleep(1);

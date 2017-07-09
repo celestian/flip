@@ -10,6 +10,7 @@ endif
 
 AM_CPPFLAGS = \
 	$(TALLOC_CFLAGS) \
+	$(TEVENT_CFLAGS) \
 	$(NANOMSG_CFLAGS) \
 	${LIBSYSTEMD_CFLAGS} \
 	${UUID_CFLAGS}
@@ -32,10 +33,12 @@ flipd_SOURCES = \
 	src/nbus/nbus.c \
 	src/json/jsmn/jsmn.c \
 	src/json/json.c \
-	src/msg/msg.c
+	src/msg/msg.c \
+	src/module/flipd/daemon_handler.c
 flipd_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
+	${TEVENT_LIBS} \
 	${NANOMSG_LIBS} \
 	${UUID_LIBS}
 
@@ -51,10 +54,12 @@ flip_crawler_SOURCES = \
 	src/json/jsmn/jsmn.c \
 	src/json/json.c \
 	src/json/btc-e_ticker.c \
-	src/msg/msg.c
+	src/msg/msg.c \
+	src/module/common_daemon.c
 flip_crawler_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
+	${TEVENT_LIBS} \
 	${NANOMSG_LIBS} \
 	${CURL_LIBS} \
 	${UUID_LIBS}
@@ -73,7 +78,8 @@ flip_collector_SOURCES = \
 	src/json/json.c \
 	src/json/btc-e_ticker.c \
 	src/msg/msg.c \
-	src/sql/sql.c
+	src/sql/sql.c \
+	src/module/common_daemon.c
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \

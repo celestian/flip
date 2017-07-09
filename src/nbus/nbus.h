@@ -25,4 +25,6 @@ errno_t nbus_send(struct nbus_ctx *nbus_ctx, const char *msg, size_t msg_size);
 errno_t nbus_recieve(TALLOC_CTX *mem_ctx, struct nbus_ctx *nbus_ctx,
                      struct string_ctx **_chunk);
 
+int nbus_get_sock_fd(struct nbus_ctx *nbus_ctx);
+
 #endif /* __NBUS_H__ */
