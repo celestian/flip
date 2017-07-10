@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
     struct flipd_args_ctx *args;
     struct config_ctx *config_ctx;
     struct nbus_ctx *io_nbus_ctx = NULL;
-    struct nbus_ctx *wd_nbus_ctx = NULL;
     struct string_ctx *chunk;
     errno_t ret;
 
@@ -63,38 +62,31 @@ int main(int argc, char *argv[])
         goto done;
     }
 
+    // -------------------------------------------------------------------------
     // Start crawler daemon
-    char *wd_identity_name = "alpha";
-    char *wd_pid_file = "/tmp/flip_crawler_alpha.pid";
-    char *wd_root_ipc = "ipc:///tmp/root_flip_crawler_alpha.ipc";
+    struct worker_deamon_ctx *wd_ctx;
 
-    ret = nbus_init_pair(mem_ctx, wd_root_ipc, &wd_nbus_ctx);
+    wd_ctx = talloc_zero(mem_ctx, struct worker_deamon_ctx);
+    if (wd_ctx == NULL) {
+        LOG(LOG_ERR, "talloc_zero() failed.");
+        ret = ENOMEM;
+        goto done;
+    }
+    wd_ctx->identity_name = "alpha";
+    wd_ctx->pid_file = "/tmp/flip_crawler_alpha.pid";
+    wd_ctx->root_ipc = "ipc:///tmp/root_flip_crawler_alpha.ipc";
+
+    ret = nbus_init_pair(mem_ctx, wd_ctx->root_ipc, &wd_ctx->nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "nbus_init_pair() failed.");
         ret = EXIT_FAILURE;
         goto done;
     }
 
-    char *command = talloc_asprintf(
-        mem_ctx, "/home/celestian/Projects/flip/x86_64/flip_crawler %s %s %s",
-        wd_identity_name, wd_pid_file, wd_root_ipc);
+    struct string_ctx *hmm_chunk;
+    ret = async_start_worker_daemon(mem_ctx, wd_ctx, &hmm_chunk);
 
-    ret = system(command);
-    if (ret != EOK) {
-        LOG(LOG_CRIT, "system() failed.");
-        ret = EXIT_FAILURE;
-        goto done;
-    }
-    talloc_free(command);
-
-    // Waiting for ask for configuration ---------------------------------------
-
-    ret = get_answer(mem_ctx, wd_nbus_ctx);
-    if (ret != EOK) {
-        LOG(LOG_CRIT, "get_answer() failed.");
-        ret = EXIT_FAILURE;
-        goto done;
-    }
+    sleep(10);
 
     ret = EXIT_SUCCESS;
     goto done;
@@ -103,7 +95,7 @@ int main(int argc, char *argv[])
     int i = 30;
     while (i > 0) {
 
-        ret = nbus_recieve(mem_ctx, wd_nbus_ctx, &chunk);
+        ret = nbus_recieve(mem_ctx, wd_ctx->nbus_ctx, &chunk);
         if (ret != EOK && ret != EAGAIN) {
             LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
             talloc_zfree(mem_ctx);
@@ -135,11 +127,13 @@ done:
         }
     }
 
-    if (wd_nbus_ctx != NULL) {
-        ret = nbus_close(wd_nbus_ctx);
-        if (ret != EOK) {
-            LOG(LOG_CRIT, "nbus_close() failed.");
-            ret = EXIT_FAILURE;
+    if (wd_ctx != NULL) {
+        if (wd_ctx->nbus_ctx != NULL) {
+            ret = nbus_close(wd_ctx->nbus_ctx);
+            if (ret != EOK) {
+                LOG(LOG_CRIT, "nbus_close() failed.");
+                ret = EXIT_FAILURE;
+            }
         }
         talloc_zfree(wd_ctx);
     }

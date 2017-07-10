@@ -26,6 +26,8 @@ nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
 * [sqlite] https://www.sqlite.org/
 * [inih] https://github.com/benhoyt/inih
 
+https://tevent.samba.org/group__tevent.html#details
+
 https://www.gnu.org/software/automake/manual/automake.html#A-Library
 
 https://talloc.samba.org/talloc/doc/html/libtalloc__bestpractices.html

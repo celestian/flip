@@ -54,7 +54,9 @@ errno_t get_config_from_root_daemon(TALLOC_CTX *mem_ctx,
         goto done;
     }
 
+    LOG(LOG_CRIT, "about asking");
     ret = nbus_send(root_nbus_ctx, serialized_msg->data, serialized_msg->size);
+    LOG(LOG_CRIT, "after asking");
     if (ret != EOK) {
         LOG(LOG_CRIT, "nbus_send() failed.");
         ret = EINVAL;

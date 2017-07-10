@@ -2,6 +2,7 @@
 #define __UTIL_ERRORS_H__
 
 #include <errno.h>
+#include <string.h>
 
 #ifndef EOK
 #define EOK 0

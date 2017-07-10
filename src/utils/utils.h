@@ -24,6 +24,24 @@
     } while (0)
 #endif
 
+#define TEVENT_REQ_RETURN_ON_ERROR(req)                                        \
+    do {                                                                       \
+        enum tevent_req_state TRROEstate;                                      \
+        uint64_t TRROEuint64;                                                  \
+        errno_t TRROEerr;                                                      \
+                                                                               \
+        if (tevent_req_is_error(req, &TRROEstate, &TRROEuint64)) {             \
+            TRROEerr = (errno_t)TRROEuint64;                                   \
+            if (TRROEstate == TEVENT_REQ_USER_ERROR) {                         \
+                if (TRROEerr == 0) {                                           \
+                    return EFAULT;                                             \
+                }                                                              \
+                return TRROEerr;                                               \
+            }                                                                  \
+            return EFAULT;                                                     \
+        }                                                                      \
+    } while (0)
+
 enum daemon_type { FLIPD, CRAWLER, COLLECTOR };
 
 bool is_file_exist(const char *file_name);
