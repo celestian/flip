@@ -122,6 +122,6 @@ errno_t parse_btc_e_ticker(TALLOC_CTX *mem_ctx, char *json,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }

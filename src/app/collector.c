@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     ret = nbus_init_sub(mem_ctx, args->root_ipc, &nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: nbus_init_sub() failed.");
-        talloc_free(mem_ctx);
+        talloc_zfree(mem_ctx);
         exit(EXIT_FAILURE);
     }
 
@@ -66,14 +66,14 @@ int main(int argc, char **argv)
     ret = sql_init(mem_ctx, args->root_ipc, &sql_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: sql_init() failed.");
-        talloc_free(mem_ctx);
+        talloc_zfree(mem_ctx);
         exit(EXIT_FAILURE);
     }
 
     ret = sql_create_ticks_table(sql_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: sql_create_ticks_table() failed.");
-        talloc_free(mem_ctx);
+        talloc_zfree(mem_ctx);
         exit(EXIT_FAILURE);
     }
 
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
         ret = nbus_recieve(mem_ctx, nbus_ctx, &chunk);
         if (ret != EOK && ret != EAGAIN) {
             LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
-            talloc_free(mem_ctx);
+            talloc_zfree(mem_ctx);
             exit(EXIT_FAILURE);
         }
         if (ret == EAGAIN) {
@@ -103,11 +103,8 @@ int main(int argc, char **argv)
             exit(EXIT_FAILURE);
         }
 
-        talloc_free(ticker_data);
-        ticker_data = NULL;
-
-        talloc_free(chunk);
-        chunk = NULL;
+        talloc_zfree(ticker_data);
+        talloc_zfree(chunk);
 
         sleep(1);
         i--;
@@ -139,7 +136,7 @@ done:
     }
 
     if (mem_ctx != NULL) {
-        talloc_free(mem_ctx);
+        talloc_zfree(mem_ctx);
     }
 
     exit(ret);

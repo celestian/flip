@@ -37,7 +37,7 @@ errno_t create_message(TALLOC_CTX *mem_ctx, const char *sender,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }
 
@@ -75,6 +75,6 @@ errno_t serialize_message(TALLOC_CTX *mem_ctx, struct msg_ctx *msg,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }

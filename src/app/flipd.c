@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
         ret = nbus_recieve(mem_ctx, wd_nbus_ctx, &chunk);
         if (ret != EOK && ret != EAGAIN) {
             LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
-            talloc_free(mem_ctx);
+            talloc_zfree(mem_ctx);
             exit(EXIT_FAILURE);
         }
         if (ret == EAGAIN) {
@@ -141,10 +141,11 @@ done:
             LOG(LOG_CRIT, "nbus_close() failed.");
             ret = EXIT_FAILURE;
         }
+        talloc_zfree(wd_ctx);
     }
 
     if (mem_ctx != NULL) {
-        talloc_free(mem_ctx);
+        talloc_zfree(mem_ctx);
     }
 
     exit(ret);

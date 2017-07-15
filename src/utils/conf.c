@@ -63,6 +63,6 @@ errno_t parse_flipd_config(TALLOC_CTX *mem_ctx, const char *filename,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }

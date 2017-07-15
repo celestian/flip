@@ -122,7 +122,7 @@ errno_t url_init_ctx(TALLOC_CTX *mem_ctx, const char *url,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }
 
@@ -152,14 +152,14 @@ errno_t url_get_data(TALLOC_CTX *mem_ctx, struct url_conn_ctx *url_conn_ctx,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }
 
 errno_t url_close(struct url_conn_ctx *url_conn_ctx_ctx)
 {
     curl_easy_cleanup(url_conn_ctx_ctx->curl_handle);
-    talloc_free(url_conn_ctx_ctx);
+    talloc_zfree(url_conn_ctx_ctx);
 
     return EOK;
 }

@@ -64,6 +64,6 @@ errno_t get_config_from_root_daemon(TALLOC_CTX *mem_ctx,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }

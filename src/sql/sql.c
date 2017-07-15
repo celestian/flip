@@ -46,7 +46,7 @@ errno_t sql_init(TALLOC_CTX *mem_ctx, const char *db_file_name,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }
 
@@ -65,7 +65,7 @@ errno_t sql_close(struct sql_ctx *sql_ctx)
         goto done;
     }
 
-    talloc_free(sql_ctx);
+    talloc_zfree(sql_ctx);
     ret = EOK;
 
 done:

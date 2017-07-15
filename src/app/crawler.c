@@ -118,8 +118,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        talloc_free(ticker_data);
-        ticker_data = NULL;
+        talloc_zfree(ticker_data);
 
         sleep(1);
         i--;
@@ -149,7 +148,7 @@ done:
     }
 
     if (mem_ctx != NULL) {
-        talloc_free(mem_ctx);
+        talloc_zfree(mem_ctx);
     }
 
     exit(ret);

@@ -60,7 +60,7 @@ static errno_t get_file_from_url(TALLOC_CTX *mem_ctx, const char *url,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }
 
@@ -132,7 +132,7 @@ static errno_t nbus_init_pubsub(TALLOC_CTX *mem_ctx, const char *url,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }
 
@@ -171,7 +171,7 @@ errno_t nbus_close(struct nbus_ctx *nbus_ctx)
         goto done;
     }
 
-    talloc_free(nbus_ctx);
+    talloc_zfree(nbus_ctx);
     ret = EOK;
 
 done:
@@ -254,7 +254,7 @@ errno_t nbus_recieve(TALLOC_CTX *mem_ctx, struct nbus_ctx *nbus_ctx,
     ret = EOK;
 
 done:
-    talloc_free(tmp_ctx);
+    talloc_zfree(tmp_ctx);
     return ret;
 }
 
