@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     log_init(CRAWLER);
 
-    mem_ctx = talloc_new(NULL);
+    mem_ctx = talloc_new(talloc_autofree_context());
     if (mem_ctx == NULL) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         ret = EXIT_FAILURE;
