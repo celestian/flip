@@ -19,5 +19,5 @@ if [ ! -e COPYING ]; then
 fi
 
 # Generate build scripts
-aclocal -I m4 --install
+aclocal -I build-aux/m4 --install
 autoreconf --install --force --verbose
