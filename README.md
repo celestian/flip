@@ -1,44 +1,97 @@
-# flip
+flip
+====
+
 Forex Simulation Platform
 
+Development & Compilation
+-------------------------
 
-## How to use
+### Prerequisities
+
+#### nanomsg library
+
+The project is based on very useful `nanomsg` library.
+
+``` bash
+sudo dnf install -y tar wget rubygem-asciidoctor cmake
+
+# compilation of nanomsg
+cd /tmp
+wget -qO- https://github.com/nanomsg/nanomsg/archive/1.0.0.tar.gz | \
+          tar --transform 's/^dbt2-0.37.50.3/dbt2/' -xvz
+
+cd /tmp/nanomsg-1.0.0
+mkdir build
+
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+cmake --build .
+ctest -C Debug .
+
+# installation
+sudo cmake --build . --target install
+
+# post-installation
+sudo ldconfig
+
+# please, add to your ~/.bashrc
+export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH
+
+# Clean up
+cd ~
+rm -fR /tmp/nanomsg-1.0.0
 ```
-reconfig --enable-debug
-./flip_crawler ../config/flip_collector.conf
-./flip_collector ../config/flip_collector.conf
 
-make clean && chmake && ./flipd /home/celestian/Projects/flip/example/flip.conf
+#### flip system
+
+``` bash
+dnf groups install -y "Development Tools" \
+                      "C Development Tools and Libraries"
+
+sudo dnf install -y \
+    pkgconf-pkg-config autoconf-archive clang pandoc \
+    systemd-devel \
+    libtalloc libtalloc-devel \
+    libtevent libtevent-devel \
+    libuuid libuuid-devel \
+    libcurl libcurl-devel \
+    sqlite-libs sqlite-devel
+
+git clone --recursive https://github.com/celestian/flip.git
+
+cd flip
+./bootstrap.sh
+. contrib/bashrc_flip
+reconfig && chmake
 ```
 
-```
-journalctl -t flip_crawler
-nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
-```
+Resources
+---------
 
-## Resources
-* [C/C++] http://en.cppreference.com
-* [argp] https://www.gnu.org/software/libc/manual/html_node/Argp.html
-* [talloc] https://talloc.samba.org/talloc/doc/html/group__talloc.html
-* [nanomsg] http://nanomsg.org/
-* [libcurl] https://curl.haxx.se/libcurl/c/libcurl.html
-* [jsmn] https://github.com/zserge/jsmn
-* [sqlite] https://www.sqlite.org/
-* [inih] https://github.com/benhoyt/inih
+-   \[C/C++\] <http://en.cppreference.com>
+-   \[argp\] <https://www.gnu.org/software/libc/manual/html_node/Argp.html>
+-   \[talloc\] <https://talloc.samba.org/talloc/doc/html/group__talloc.html>
+-   \[talloc best practicies\] <https://talloc.samba.org/talloc/doc/html/libtalloc__bestpractices.html>
+-   \[tevent\] <https://tevent.samba.org/group__tevent.html#details>
+-   \[nanomsg\] <http://nanomsg.org/>
+-   \[libcurl\] <https://curl.haxx.se/libcurl/c/libcurl.html>
+-   \[jsmn\] <https://github.com/zserge/jsmn>
+-   \[jsmn examples\] <https://github.com/alisdair/jsmn-example>
+-   \[sqlite\] <https://www.sqlite.org/>
+-   \[inih\] <https://github.com/benhoyt/inih>
+-   \[creating library in C\] <https://www.gnu.org/software/automake/manual/automake.html#A-Library>
 
-https://tevent.samba.org/group__tevent.html#details
+How to use
+----------
 
-https://www.gnu.org/software/automake/manual/automake.html#A-Library
+TBD, draft:
 
-https://talloc.samba.org/talloc/doc/html/libtalloc__bestpractices.html
-https://github.com/alisdair/jsmn-example
+    reconfig --enable-debug
+    ./flip_crawler ../config/flip_collector.conf
+    ./flip_collector ../config/flip_collector.conf
 
+    make clean && chmake && ./flipd /home/celestian/Projects/flip/example/flip.conf
 
-## Notice
-`src/json/jsmn` is a git submodule.
-
-`src/conf/inih` is a git submodule.
-
-```
-git submodule foreach git reset --hard
-```
+    journalctl -t flip_crawler
+    nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
