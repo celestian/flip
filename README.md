@@ -8,9 +8,16 @@ Development & Compilation
 
 ### Prerequisities
 
-#### nanomsg library
+### nanomsg library
 
-The project is based on very useful `nanomsg` library.
+##### nanomsg installation from copr
+
+``` bash
+sudo dnf copr enable tknapstad/nanomsg
+sudo dnf install -y nanomsg nanomsg-devel nanomsg-utils
+```
+
+##### nanomsg installation manually
 
 ``` bash
 sudo dnf install -y tar wget rubygem-asciidoctor cmake
@@ -43,7 +50,7 @@ cd ~
 rm -fR /tmp/nanomsg-1.0.0
 ```
 
-#### flip system
+#### others libraries and tools
 
 ``` bash
 dnf groups install -y "Development Tools" \
@@ -57,6 +64,11 @@ sudo dnf install -y \
     libuuid libuuid-devel \
     libcurl libcurl-devel \
     sqlite-libs sqlite-devel
+```
+
+### Compile flip system
+
+``` bash
 
 git clone --recursive https://github.com/celestian/flip.git
 
