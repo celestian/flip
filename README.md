@@ -85,7 +85,7 @@ Resources
 -   \[argp\] <https://www.gnu.org/software/libc/manual/html_node/Argp.html>
 -   \[talloc\] <https://talloc.samba.org/talloc/doc/html/group__talloc.html>
 -   \[talloc best practicies\] <https://talloc.samba.org/talloc/doc/html/libtalloc__bestpractices.html>
--   \[tevent\] <https://tevent.samba.org/group__tevent.html#details>
+-   \[tevent\] <https://tevent.samba.org/index.html>
 -   \[nanomsg\] <http://nanomsg.org/>
 -   \[libcurl\] <https://curl.haxx.se/libcurl/c/libcurl.html>
 -   \[jsmn\] <https://github.com/zserge/jsmn>
@@ -99,11 +99,14 @@ How to use
 
 TBD, draft:
 
+``` bash
     reconfig --enable-debug
-    ./flip_crawler ../config/flip_collector.conf
-    ./flip_collector ../config/flip_collector.conf
 
     make clean && chmake && ./flipd /home/celestian/Projects/flip/example/flip.conf
 
+    ps -e | grep flip ; ll -l /tmp | grep flip
+
     journalctl -t flip_crawler
+
     nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
+```
