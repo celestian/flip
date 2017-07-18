@@ -53,7 +53,7 @@ rm -fR /tmp/nanomsg-1.0.0
 #### others libraries and tools
 
 ``` bash
-dnf groups install -y "Development Tools" \
+sudo dnf groups install -y "Development Tools" \
                       "C Development Tools and Libraries"
 
 sudo dnf install -y \
