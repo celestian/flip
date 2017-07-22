@@ -17,9 +17,19 @@ AM_CPPFLAGS = \
 
 
 bin_PROGRAMS = \
+	flip \
 	flipd \
 	flip_crawler \
 	flip_collector
+
+
+
+flip_SOURCES = \
+	src/app/flip.c
+flip_LDADD = \
+	${LIBSYSTEMD_LIBS} \
+	${TALLOC_LIBS} \
+	${NANOMSG_LIBS}
 
 
 flipd_SOURCES = \
