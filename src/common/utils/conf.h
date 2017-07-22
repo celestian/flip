@@ -5,7 +5,7 @@
 
 #include <talloc.h>
 
-#include "src/utils/errors.h"
+#include "src/common/utils/errors.h"
 
 struct config_ctx {
     char *work_dir;

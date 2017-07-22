@@ -2,10 +2,10 @@
 #include <talloc.h>
 
 #include "./config.h"
-#include "src/utils/args.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
-#include "src/utils/utils.h"
+#include "src/common/utils/args.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
+#include "src/common/utils/utils.h"
 
 #define FLIPD_TAG "flipd | platform root daemon"
 #define CRAWLER_TAG "flip_crawler | daemon for data crawling"

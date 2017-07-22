@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "src/utils/utils.h"
+#include "src/common/utils/utils.h"
 
 bool is_file_exist(const char *file_name)
 {

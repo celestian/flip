@@ -5,10 +5,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "src/utils/daemon.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
-#include "src/utils/utils.h"
+#include "src/common/utils/daemon.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
+#include "src/common/utils/utils.h"
 
 static const char *static_variable_pid_file;
 

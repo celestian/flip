@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <syslog.h>
 
-#include "src/utils/utils.h"
+#include "src/common/utils/utils.h"
 
 /*
     JOURNALD:

@@ -8,7 +8,7 @@
 #include <systemd/sd-journal.h>
 #include <unistd.h>
 
-#include "src/utils/logs.h"
+#include "src/common/utils/logs.h"
 
 #define DEFAULT_APP_TAG "flip"
 #define FLIPD_APP_TAG "flipd"

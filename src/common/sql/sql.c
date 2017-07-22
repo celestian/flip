@@ -10,8 +10,8 @@
 
 #include "sql.h"
 #include "sql_private.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 errno_t sql_init(TALLOC_CTX *mem_ctx, const char *db_file_name,
                  struct sql_ctx **_sql_ctx)

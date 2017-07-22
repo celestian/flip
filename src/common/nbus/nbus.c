@@ -11,10 +11,10 @@
 
 #include "nbus.h"
 #include "nbus_private.h"
-#include "src/utils/data.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
-#include "src/utils/utils.h"
+#include "src/common/utils/data.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
+#include "src/common/utils/utils.h"
 
 static errno_t get_file_from_url(TALLOC_CTX *mem_ctx, const char *url,
                                  char **_file_name)

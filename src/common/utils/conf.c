@@ -5,10 +5,10 @@
 
 #include <talloc.h>
 
-#include "src/utils/conf.h"
-#include "src/utils/errors.h"
-#include "src/utils/inih/ini.h"
-#include "src/utils/logs.h"
+#include "src/common/utils/conf.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/inih/ini.h"
+#include "src/common/utils/logs.h"
 
 #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
 

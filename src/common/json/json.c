@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "src/json/json.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
+#include "src/common/json/json.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 char *jsmn_strerror(int errnum)
 {

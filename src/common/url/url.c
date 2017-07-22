@@ -6,11 +6,11 @@
 #include <curl/curl.h>
 #include <talloc.h>
 
-#include "src/url/url.h"
-#include "src/url/url_private.h"
-#include "src/utils/data.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
+#include "src/common/url/url.h"
+#include "src/common/url/url_private.h"
+#include "src/common/utils/data.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
                                   void *userp)

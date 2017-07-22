@@ -1,11 +1,11 @@
 #include <string.h>
 #include <time.h>
 
-#include "src/msg/msg.h"
-#include "src/msg/msg_private.h"
-#include "src/utils/data.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
+#include "src/common/msg/msg.h"
+#include "src/common/msg/msg_private.h"
+#include "src/common/utils/data.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 errno_t create_message(TALLOC_CTX *mem_ctx, const char *sender,
                        const char *recepient, enum message_type message_type,

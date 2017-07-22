@@ -24,16 +24,16 @@ bin_PROGRAMS = \
 
 flipd_SOURCES = \
 	src/app/flipd.c \
-	src/utils/inih/ini.c \
-	src/utils/conf.c \
-	src/utils/utils.c \
-	src/utils/args.c \
-	src/utils/daemon.c \
-	src/utils/logs.c \
-	src/nbus/nbus.c \
-	src/json/jsmn/jsmn.c \
-	src/json/json.c \
-	src/msg/msg.c \
+	src/common/utils/inih/ini.c \
+	src/common/utils/conf.c \
+	src/common/utils/utils.c \
+	src/common/utils/args.c \
+	src/common/utils/daemon.c \
+	src/common/utils/logs.c \
+	src/common/nbus/nbus.c \
+	src/common/json/jsmn/jsmn.c \
+	src/common/json/json.c \
+	src/common/msg/msg.c \
 	src/module/flipd/daemon_handler.c
 flipd_LDADD = \
 	${LIBSYSTEMD_LIBS} \
@@ -45,16 +45,16 @@ flipd_LDADD = \
 
 flip_crawler_SOURCES = \
 	src/app/crawler.c \
-	src/utils/utils.c \
-	src/utils/args.c \
-	src/utils/daemon.c \
-	src/utils/logs.c \
-	src/nbus/nbus.c \
-	src/url/url.c \
-	src/json/jsmn/jsmn.c \
-	src/json/json.c \
-	src/json/btc-e_ticker.c \
-	src/msg/msg.c \
+	src/common/utils/utils.c \
+	src/common/utils/args.c \
+	src/common/utils/daemon.c \
+	src/common/utils/logs.c \
+	src/common/nbus/nbus.c \
+	src/common/url/url.c \
+	src/common/json/jsmn/jsmn.c \
+	src/common/json/json.c \
+	src/common/json/btc-e_ticker.c \
+	src/common/msg/msg.c \
 	src/module/common_daemon.c
 flip_crawler_LDADD = \
 	${LIBSYSTEMD_LIBS} \
@@ -69,16 +69,16 @@ flip_crawler_LDFLAGS = \
 
 flip_collector_SOURCES = \
 	src/app/collector.c \
-	src/utils/utils.c \
-	src/utils/args.c \
-	src/utils/daemon.c \
-	src/utils/logs.c \
-	src/nbus/nbus.c \
-	src/json/jsmn/jsmn.c \
-	src/json/json.c \
-	src/json/btc-e_ticker.c \
-	src/msg/msg.c \
-	src/sql/sql.c \
+	src/common/utils/utils.c \
+	src/common/utils/args.c \
+	src/common/utils/daemon.c \
+	src/common/utils/logs.c \
+	src/common/nbus/nbus.c \
+	src/common/json/jsmn/jsmn.c \
+	src/common/json/json.c \
+	src/common/json/btc-e_ticker.c \
+	src/common/msg/msg.c \
+	src/common/sql/sql.c \
 	src/module/common_daemon.c
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \

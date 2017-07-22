@@ -3,8 +3,8 @@
 
 #include <talloc.h>
 
-#include "src/json/jsmn/jsmn.h"
-#include "src/utils/errors.h"
+#include "src/common/json/jsmn/jsmn.h"
+#include "src/common/utils/errors.h"
 
 struct btce_ticker {
     char *pair;

@@ -4,8 +4,8 @@
 #include <stddef.h>
 #include <talloc.h>
 
-#include "src/json/btc-e_ticker.h"
-#include "src/utils/errors.h"
+#include "src/common/json/btc-e_ticker.h"
+#include "src/common/utils/errors.h"
 
 struct sql_ctx;
 

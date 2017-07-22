@@ -3,14 +3,14 @@
 
 #include <talloc.h>
 
-#include "src/json/btc-e_ticker.h"
-#include "src/msg/msg.h"
-#include "src/nbus/nbus.h"
-#include "src/sql/sql.h"
-#include "src/utils/args.h"
-#include "src/utils/daemon.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
+#include "src/common/json/btc-e_ticker.h"
+#include "src/common/msg/msg.h"
+#include "src/common/nbus/nbus.h"
+#include "src/common/sql/sql.h"
+#include "src/common/utils/args.h"
+#include "src/common/utils/daemon.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 int main(int argc, char **argv)
 {

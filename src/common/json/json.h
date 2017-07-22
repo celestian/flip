@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-#include "src/json/jsmn/jsmn.h"
-#include "src/utils/errors.h"
+#include "src/common/json/jsmn/jsmn.h"
+#include "src/common/utils/errors.h"
 
 char *jsmn_strerror(int errnum);
 

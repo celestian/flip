@@ -3,14 +3,14 @@
 #include <unistd.h>
 
 #include "src/module/flipd/daemon_handler.h"
-#include "src/nbus/nbus.h"
-#include "src/utils/data.h"
-#include "src/utils/errors.h"
-#include "src/utils/logs.h"
+#include "src/common/nbus/nbus.h"
+#include "src/common/utils/data.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
-errno_t async_start_worker_daemon(TALLOC_CTX *mem_ctx,
-                                  struct worker_deamon_ctx *wd_ctx,
-                                  struct string_ctx **_chunk)
+errno_t async_start_worker_daemon2(TALLOC_CTX *mem_ctx,
+                                   struct worker_daemon_ctx *wd_ctx,
+                                   struct string_ctx **_chunk)
 {
     TALLOC_CTX *tmp_ctx;
     struct string_ctx *chunk;

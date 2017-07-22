@@ -3,9 +3,9 @@
 
 #include <talloc.h>
 
-#include "src/nbus/nbus.h"
-#include "src/utils/errors.h"
-#include "src/utils/utils.h"
+#include "src/common/nbus/nbus.h"
+#include "src/common/utils/errors.h"
+#include "src/common/utils/utils.h"
 
 errno_t get_config_from_root_daemon(TALLOC_CTX *mem_ctx,
                                     struct nbus_ctx *root_nbus_ctx,

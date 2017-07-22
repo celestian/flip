@@ -4,9 +4,9 @@
 #include <talloc.h>
 #include <tevent.h>
 
-#include "src/nbus/nbus.h"
-#include "src/utils/data.h"
-#include "src/utils/errors.h"
+#include "src/common/nbus/nbus.h"
+#include "src/common/utils/data.h"
+#include "src/common/utils/errors.h"
 
 struct worker_deamon_ctx {
     const char *identity_name;
