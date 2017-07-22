@@ -3,12 +3,12 @@
 RELATIVE_FLIP_SOURCE_PATH=`dirname ${BASH_SOURCE[@]}`
 FLIP_SOURCE_PATH=`realpath ${RELATIVE_FLIP_SOURCE_PATH}`
 
-echo '::: format all source files'
-${FLIP_SOURCE_PATH}/clang-format.sh
-
 # Removing of trailing spaces
 echo '::: removing trailing white spaces from all markdown files'
 sed --in-place 's/[[:space:]]\+$//' `find ${FLIP_SOURCE_PATH} -type f -name '*.md'`
+
+echo '::: format all source files'
+${FLIP_SOURCE_PATH}/clang-format.sh
 
 # Reformat all markdown files to markdown_github
 echo '::: reformat all markdown files to markdown_github'
