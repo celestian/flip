@@ -6,7 +6,6 @@
 #include <talloc.h>
 
 #include "src/common/utils/conf.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/inih/ini.h"
 #include "src/common/utils/logs.h"
 

@@ -4,7 +4,7 @@
 #include <talloc.h>
 
 #include "src/common/nbus/nbus.h"
-#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 #include "src/common/utils/utils.h"
 
 errno_t get_config_from_root_daemon(TALLOC_CTX *mem_ctx,

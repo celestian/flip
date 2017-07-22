@@ -9,7 +9,6 @@
 #include "src/common/url/url.h"
 #include "src/common/url/url_private.h"
 #include "src/common/utils/data.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
 
 static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,

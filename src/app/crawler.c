@@ -9,14 +9,13 @@
 #include <talloc.h>
 
 #include "src/common/json/btc-e_ticker.h"
-#include "src/module/common_daemon.h"
 #include "src/common/nbus/nbus.h"
 #include "src/common/url/url.h"
 #include "src/common/utils/args.h"
 #include "src/common/utils/daemon.h"
 #include "src/common/utils/data.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
+#include "src/module/common_daemon.h"
 
 int main(int argc, char *argv[])
 {

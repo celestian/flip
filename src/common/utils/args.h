@@ -3,7 +3,7 @@
 
 #include <talloc.h>
 
-#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 #include "src/common/utils/utils.h"
 
 struct flipd_args_ctx {

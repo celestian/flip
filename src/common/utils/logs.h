@@ -1,10 +1,21 @@
 #ifndef __UTIL_LOGS_H__
 #define __UTIL_LOGS_H__
 
+#include <errno.h>
 #include <stdarg.h>
+#include <string.h>
 #include <syslog.h>
 
 #include "src/common/utils/utils.h"
+
+#ifndef EOK
+#define EOK 0
+#endif
+
+#ifndef HAVE_ERRNO_T
+#define HAVE_ERRNO_T
+typedef int errno_t;
+#endif
 
 /*
     JOURNALD:

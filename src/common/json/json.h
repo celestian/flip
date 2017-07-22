@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "src/common/json/jsmn/jsmn.h"
-#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 char *jsmn_strerror(int errnum);
 

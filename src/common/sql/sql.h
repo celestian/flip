@@ -5,7 +5,7 @@
 #include <talloc.h>
 
 #include "src/common/json/btc-e_ticker.h"
-#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 struct sql_ctx;
 

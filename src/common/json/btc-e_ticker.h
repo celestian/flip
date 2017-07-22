@@ -4,7 +4,7 @@
 #include <talloc.h>
 
 #include "src/common/json/jsmn/jsmn.h"
-#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 struct btce_ticker {
     char *pair;

@@ -2,11 +2,10 @@
 #include <tevent.h>
 #include <unistd.h>
 
-#include "src/module/flipd/daemon_handler.h"
 #include "src/common/nbus/nbus.h"
 #include "src/common/utils/data.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
+#include "src/module/flipd/daemon_handler.h"
 
 errno_t async_start_worker_daemon2(TALLOC_CTX *mem_ctx,
                                    struct worker_daemon_ctx *wd_ctx,

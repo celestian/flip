@@ -6,7 +6,6 @@
 #include <unistd.h>
 
 #include "src/common/utils/daemon.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
 #include "src/common/utils/utils.h"
 

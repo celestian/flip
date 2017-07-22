@@ -6,7 +6,7 @@
 
 #include "src/common/nbus/nbus.h"
 #include "src/common/utils/data.h"
-#include "src/common/utils/errors.h"
+#include "src/common/utils/logs.h"
 
 struct worker_deamon_ctx {
     const char *identity_name;

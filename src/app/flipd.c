@@ -8,7 +8,6 @@
 
 #include <talloc.h>
 
-#include "src/module/flipd/daemon_handler.h"
 #include "src/common/msg/msg.h"
 #include "src/common/nbus/nbus.h"
 #include "src/common/url/url.h"
@@ -16,8 +15,8 @@
 #include "src/common/utils/conf.h"
 #include "src/common/utils/daemon.h"
 #include "src/common/utils/data.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
+#include "src/module/flipd/daemon_handler.h"
 
 int main(int argc, char *argv[])
 {

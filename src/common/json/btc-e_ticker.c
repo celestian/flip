@@ -6,7 +6,6 @@
 #include "src/common/json/btc-e_ticker.h"
 #include "src/common/json/jsmn/jsmn.h"
 #include "src/common/json/json.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
 
 errno_t parse_btc_e_ticker(TALLOC_CTX *mem_ctx, char *json,

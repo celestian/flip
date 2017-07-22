@@ -3,7 +3,6 @@
 
 #include "./config.h"
 #include "src/common/utils/args.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
 #include "src/common/utils/utils.h"
 

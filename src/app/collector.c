@@ -9,7 +9,6 @@
 #include "src/common/sql/sql.h"
 #include "src/common/utils/args.h"
 #include "src/common/utils/daemon.h"
-#include "src/common/utils/errors.h"
 #include "src/common/utils/logs.h"
 
 int main(int argc, char **argv)
