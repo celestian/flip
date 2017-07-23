@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv)
 {
-    TALLOC_CTX *mem_ctx = NULL;
+    struct main_context *main_ctx = NULL;
     struct worker_args_ctx *args;
     struct nbus_ctx *root_nbus_ctx = NULL;
     struct nbus_ctx *nbus_ctx;
@@ -22,16 +22,14 @@ int main(int argc, char **argv)
     struct btce_ticker *ticker_data;
     errno_t ret;
 
-    log_init(COLLECTOR);
-
-    mem_ctx = talloc_new(talloc_autofree_context());
-    if (mem_ctx == NULL) {
-        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+    ret = init_main_context(COLLECTOR, &main_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: init_main_context() failed.");
         ret = EXIT_FAILURE;
         goto done;
     }
 
-    ret = parse_worker_args(mem_ctx, argc, argv, COLLECTOR, &args);
+    ret = parse_worker_args(main_ctx, argc, argv, COLLECTOR, &args);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: parse_worker_args() failed.");
         ret = EXIT_FAILURE;
@@ -42,7 +40,7 @@ int main(int argc, char **argv)
     run_daemon(args->pid_file);
 #endif
 
-    ret = nbus_init_pair(mem_ctx, args->root_ipc, &root_nbus_ctx);
+    ret = nbus_init_pair(main_ctx, args->root_ipc, &root_nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "nbus_init_pair() failed.");
         ret = EXIT_FAILURE;
@@ -54,34 +52,34 @@ int main(int argc, char **argv)
     goto done;
 
     // TODO zde nema byt args->root_ipc !!
-    ret = nbus_init_sub(mem_ctx, args->root_ipc, &nbus_ctx);
+    ret = nbus_init_sub(main_ctx, args->root_ipc, &nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: nbus_init_sub() failed.");
-        talloc_zfree(mem_ctx);
+        talloc_zfree(main_ctx);
         exit(EXIT_FAILURE);
     }
 
     // TODO zde nema byt args->root_ipc !!
-    ret = sql_init(mem_ctx, args->root_ipc, &sql_ctx);
+    ret = sql_init(main_ctx, args->root_ipc, &sql_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: sql_init() failed.");
-        talloc_zfree(mem_ctx);
+        talloc_zfree(main_ctx);
         exit(EXIT_FAILURE);
     }
 
     ret = sql_create_ticks_table(sql_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: sql_create_ticks_table() failed.");
-        talloc_zfree(mem_ctx);
+        talloc_zfree(main_ctx);
         exit(EXIT_FAILURE);
     }
 
     int i = 20;
     while (i > 0) {
-        ret = nbus_recieve(mem_ctx, nbus_ctx, &chunk);
+        ret = nbus_recieve(main_ctx, nbus_ctx, &chunk);
         if (ret != EOK && ret != EAGAIN) {
             LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
-            talloc_zfree(mem_ctx);
+            talloc_zfree(main_ctx);
             exit(EXIT_FAILURE);
         }
         if (ret == EAGAIN) {
@@ -90,7 +88,7 @@ int main(int argc, char **argv)
             continue;
         }
 
-        ret = parse_btc_e_ticker(mem_ctx, chunk->data, &ticker_data);
+        ret = parse_btc_e_ticker(main_ctx, chunk->data, &ticker_data);
         if (ret != EOK) {
             LOG(LOG_CRIT, "Critical failure: parse_btc_e_ticker() failed.");
             exit(EXIT_FAILURE);
@@ -134,8 +132,8 @@ done:
         }
     }
 
-    if (mem_ctx != NULL) {
-        talloc_zfree(mem_ctx);
+    if (main_ctx != NULL) {
+        talloc_zfree(main_ctx);
     }
 
     exit(ret);

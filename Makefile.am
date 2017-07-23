@@ -93,6 +93,7 @@ flip_collector_SOURCES = \
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
+	${TEVENT_LIBS} \
 	${NANOMSG_LIBS} \
 	${SQLITE3_LDFLAGS} \
 	${UUID_LIBS}

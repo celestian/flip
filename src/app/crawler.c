@@ -19,7 +19,7 @@
 
 int main(int argc, char *argv[])
 {
-    TALLOC_CTX *mem_ctx = NULL;
+    struct main_context *main_ctx = NULL;
     struct worker_args_ctx *args;
     struct url_conn_ctx *url_conn_ctx;
     struct nbus_ctx *root_nbus_ctx = NULL;
@@ -29,16 +29,14 @@ int main(int argc, char *argv[])
     int updated = 0;
     errno_t ret;
 
-    log_init(CRAWLER);
-
-    mem_ctx = talloc_new(talloc_autofree_context());
-    if (mem_ctx == NULL) {
-        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+    ret = init_main_context(CRAWLER, &main_ctx);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: init_main_context() failed.");
         ret = EXIT_FAILURE;
         goto done;
     }
 
-    ret = parse_worker_args(mem_ctx, argc, argv, CRAWLER, &args);
+    ret = parse_worker_args(main_ctx, argc, argv, CRAWLER, &args);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: parse_worker_args() failed.");
         ret = EXIT_FAILURE;
@@ -49,7 +47,7 @@ int main(int argc, char *argv[])
     run_daemon(args->pid_file);
 #endif
 
-    ret = nbus_init_pair(mem_ctx, args->root_ipc, &root_nbus_ctx);
+    ret = nbus_init_pair(main_ctx, args->root_ipc, &root_nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "nbus_init_pair() failed.");
         ret = EXIT_FAILURE;
@@ -61,7 +59,7 @@ int main(int argc, char *argv[])
     char *config_json;
 
     ret = get_config_from_root_daemon(
-        mem_ctx, root_nbus_ctx, args->identity_name, CRAWLER, &config_json);
+        main_ctx, root_nbus_ctx, args->identity_name, CRAWLER, &config_json);
     if (ret != EOK) {
         LOG(LOG_CRIT, "get_config_from_root_daemon() failed.");
         ret = EXIT_FAILURE;
@@ -75,7 +73,7 @@ int main(int argc, char *argv[])
     // -------------------------------------------------------------------------
 
     // TODO zde nema byt args->root_ipc !!
-    ret = nbus_init_pub(mem_ctx, args->root_ipc, &nbus_ctx);
+    ret = nbus_init_pub(main_ctx, args->root_ipc, &nbus_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);
@@ -87,7 +85,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    ret = url_init_ctx(mem_ctx, "https://btc-e.com/api/3/ticker/btc_usd",
+    ret = url_init_ctx(main_ctx, "https://btc-e.com/api/3/ticker/btc_usd",
                        &url_conn_ctx);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
@@ -96,13 +94,13 @@ int main(int argc, char *argv[])
 
     int i = 10;
     while (i > 0) {
-        ret = url_get_data(mem_ctx, url_conn_ctx, &chunk);
+        ret = url_get_data(main_ctx, url_conn_ctx, &chunk);
         if (ret != EOK) {
             LOG(LOG_CRIT, "Critical failure: Not enough memory.");
             exit(EXIT_FAILURE);
         }
 
-        ret = parse_btc_e_ticker(mem_ctx, chunk->data, &ticker_data);
+        ret = parse_btc_e_ticker(main_ctx, chunk->data, &ticker_data);
         if (ret != EOK) {
             LOG(LOG_CRIT, "Critical failure: Not enough memory.");
             exit(EXIT_FAILURE);
@@ -146,8 +144,8 @@ done:
         }
     }
 
-    if (mem_ctx != NULL) {
-        talloc_zfree(mem_ctx);
+    if (main_ctx != NULL) {
+        talloc_zfree(main_ctx);
     }
 
     exit(ret);

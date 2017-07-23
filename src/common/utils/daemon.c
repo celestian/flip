@@ -5,6 +5,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <talloc.h>
+#include <tevent.h>
+
 #include "src/common/utils/daemon.h"
 #include "src/common/utils/logs.h"
 #include "src/common/utils/utils.h"
@@ -61,6 +64,38 @@ static errno_t remove_pid()
         }
     }
 
+    ret = EOK;
+
+done:
+    return ret;
+}
+
+errno_t init_main_context(enum daemon_type daemon_type,
+                          struct main_context **_main_ctx)
+{
+    struct tevent_context *event_ctx;
+    struct main_context *main_ctx;
+    errno_t ret;
+
+    log_init(daemon_type);
+
+    event_ctx = tevent_context_init(talloc_autofree_context());
+    if (event_ctx == NULL) {
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+        ret = ENOMEM;
+        goto done;
+    }
+
+    main_ctx = talloc(event_ctx, struct main_context);
+    if (main_ctx == NULL) {
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+        ret = ENOMEM;
+        goto done;
+    }
+
+    main_ctx->event_ctx = event_ctx;
+
+    *_main_ctx = main_ctx;
     ret = EOK;
 
 done:
