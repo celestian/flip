@@ -93,6 +93,7 @@ Resources
 -   \[sqlite\] <https://www.sqlite.org/>
 -   \[inih\] <https://github.com/benhoyt/inih>
 -   \[creating library in C\] <https://www.gnu.org/software/automake/manual/automake.html#A-Library>
+-   \[daemon\] <https://www.freedesktop.org/software/systemd/man/daemon.html>
 
 How to use
 ----------
