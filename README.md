@@ -3,6 +3,15 @@ flip
 
 Forex Simulation Platform
 
+Features plan
+-------------
+
+-   \[ \] CLI flip can ping flipd daemon (\#12)
+-   \[ \] flipd daemon can start flip\_crawler with proper configuration (\#13)
+-   \[ \] flipd daemon can start flip\_collector with proper configuration (\#14)
+-   \[ \] flip\_collector can save data to disk periodically (\#15)
+-   \[ \] flip\_collector can save data to disk and end if flipd ask (\#16)
+
 Development & Compilation
 -------------------------
 
