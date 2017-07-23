@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     }
 
 #ifndef DEBUG
-    run_daemon(config_ctx->pid_file);
+    become_daemon(config_ctx->pid_file);
 #endif
 
     ret = nbus_init_pair(main_ctx, config_ctx->io_socket, &io_nbus_ctx);

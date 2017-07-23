@@ -102,7 +102,7 @@ done:
     return ret;
 }
 
-void run_daemon(char *pid_file)
+void become_daemon(char *pid_file)
 {
     pid_t pid = 0;
     pid_t sid = 0;

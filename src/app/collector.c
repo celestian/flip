@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     }
 
 #ifndef DEBUG
-    run_daemon(args->pid_file);
+    become_daemon(args->pid_file);
 #endif
 
     ret = nbus_init_pair(main_ctx, args->root_ipc, &root_nbus_ctx);
