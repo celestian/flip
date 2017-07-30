@@ -72,6 +72,7 @@ sudo dnf install -y \
     libtevent libtevent-devel \
     libuuid libuuid-devel \
     libcurl libcurl-devel \
+    libwebsockets libwebsockets-devel \
     sqlite-libs sqlite-devel
 ```
 
@@ -97,6 +98,7 @@ Resources
 -   \[tevent\] <https://tevent.samba.org/index.html>
 -   \[nanomsg\] <http://nanomsg.org/>
 -   \[libcurl\] <https://curl.haxx.se/libcurl/c/libcurl.html>
+-   \[websockets\] <https://libwebsockets.org/>
 -   \[jsmn\] <https://github.com/zserge/jsmn>
 -   \[jsmn examples\] <https://github.com/alisdair/jsmn-example>
 -   \[sqlite\] <https://www.sqlite.org/>

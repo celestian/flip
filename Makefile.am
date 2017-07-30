@@ -72,10 +72,11 @@ flip_crawler_LDADD = \
 	${TEVENT_LIBS} \
 	${NANOMSG_LIBS} \
 	${CURL_LIBS} \
+	${LIBWEBSOCKETS_CFLAGS} \
 	${UUID_LIBS}
 flip_crawler_LDFLAGS = \
-	${CURL_CFLAGS}
-
+	${CURL_CFLAGS} \
+	${LIBWEBSOCKETS_CFLAGS}
 
 flip_collector_SOURCES = \
 	src/app/collector.c \
