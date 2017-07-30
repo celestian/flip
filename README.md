@@ -121,4 +121,8 @@ TBD, draft:
     journalctl -t flip_crawler
 
     nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
+
+
+    coredumpctl list
+    coredumpctl -o bar.coredump dump /<path>/<to>/<service>
 ```
