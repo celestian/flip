@@ -17,6 +17,7 @@
 #include "src/common/utils/data.h"
 #include "src/common/utils/logs.h"
 #include "src/module/flipd/daemon_handler.h"
+#include "src/module/flipd/listen_handler.h"
 
 int main(int argc, char *argv[])
 {
@@ -58,6 +59,21 @@ int main(int argc, char *argv[])
         ret = EXIT_FAILURE;
         goto done;
     }
+
+    ret = async_listen(main_ctx, main_ctx->event_ctx, io_nbus_ctx);
+    LOG(LOG_CRIT, "async_listen: %d", ret);
+
+    LOG(LOG_CRIT, ">>> start");
+
+    tevent_loop_wait(main_ctx->event_ctx);
+    // talloc_free(main_ctx->event_ctx);
+
+    LOG(LOG_CRIT, ">>> end");
+
+    sleep(3);
+
+    ret = EXIT_SUCCESS;
+    goto done;
 
     // -------------------------------------------------------------------------
 

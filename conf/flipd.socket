@@ -1,0 +1,5 @@
+[Socket]
+ListenStream=/run/foobar.sk
+
+[Install]
+WantedBy=sockets.target

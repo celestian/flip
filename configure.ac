@@ -47,8 +47,8 @@ PKG_CHECK_MODULES([LIBWEBSOCKETS], [libwebsockets])
 
 AX_LIB_SQLITE3()
 
-AX_LIB_CURL([7.50.0],,[
-  AC_MSG_ERROR([Your system lacks libcurl >= 7.50.0])
+AX_LIB_CURL([7.47.0],,[
+  AC_MSG_ERROR([Your system lacks libcurl >= 7.47.0])
 ])
 
 # Checks for header files.

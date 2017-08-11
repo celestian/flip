@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <nanomsg/bus.h>
 #include <nanomsg/nn.h>
 #include <nanomsg/pair.h>
 #include <nanomsg/pubsub.h>
@@ -138,7 +139,7 @@ done:
 errno_t nbus_init_pair(TALLOC_CTX *mem_ctx, const char *url,
                        struct nbus_ctx **_nbus_ctx)
 {
-    return nbus_init_pubsub(mem_ctx, url, NN_PAIR, _nbus_ctx);
+    return nbus_init_pubsub(mem_ctx, url, NN_BUS, _nbus_ctx);
 }
 
 errno_t nbus_init_pub(TALLOC_CTX *mem_ctx, const char *url,
@@ -163,6 +164,7 @@ errno_t nbus_close(struct nbus_ctx *nbus_ctx)
     }
 
     ret = nn_shutdown(nbus_ctx->sock_fd, nbus_ctx->endpoint_id);
+    LOG(LOG_CRIT, "nn_shutdown: %d", ret);
     if (ret < 0) {
         LOG(LOG_ERR, "nn_shutdown() failed. [%d | %s]", errno,
             nn_strerror(errno));

@@ -25,10 +25,15 @@ bin_PROGRAMS = \
 
 
 flip_SOURCES = \
-	src/app/flip.c
+	src/app/flip.c \
+	src/common/utils/utils.c \
+	src/common/utils/daemon.c \
+	src/common/utils/logs.c \
+	src/common/nbus/nbus.c
 flip_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
+	${TEVENT_LIBS} \
 	${NANOMSG_LIBS}
 
 
@@ -44,6 +49,7 @@ flipd_SOURCES = \
 	src/common/json/jsmn/jsmn.c \
 	src/common/json/json.c \
 	src/common/msg/msg.c \
+	src/module/flipd/listen_handler.c \
 	src/module/flipd/daemon_handler.c
 flipd_LDADD = \
 	${LIBSYSTEMD_LIBS} \

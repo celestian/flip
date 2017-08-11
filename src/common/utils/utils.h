@@ -42,7 +42,7 @@
         }                                                                      \
     } while (0)
 
-enum daemon_type { FLIPD, CRAWLER, COLLECTOR };
+enum daemon_type { FLIP, FLIPD, CRAWLER, COLLECTOR };
 
 bool is_file_exist(const char *file_name);
 
