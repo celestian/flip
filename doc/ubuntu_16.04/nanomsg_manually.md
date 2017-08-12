@@ -1,8 +1,8 @@
-Manual installation of nanomsg
-------------------------------
+Manual installation of nanomsg on Ubuntu 16.04
+----------------------------------------------
 
 ``` bash
-sudo dnf install -y tar wget rubygem-asciidoctor cmake
+sudo apt install tar wget asciidoctor cmake
 
 # compilation of nanomsg
 cd /tmp
@@ -23,7 +23,7 @@ sudo cmake --build . --target install
 # post-installation
 sudo ldconfig
 
-# please, add to your ~/.bashrc
+# please, add to end of your ~/.bashrc
 export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH
 

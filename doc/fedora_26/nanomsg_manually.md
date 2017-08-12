@@ -1,8 +1,8 @@
-Manual installation of nanomsg
-------------------------------
+Manual installation of nanomsg on Fedora 26
+-------------------------------------------
 
 ``` bash
-sudo apt install tar wget asciidoctor cmake
+sudo dnf install -y tar wget rubygem-asciidoctor cmake
 
 # compilation of nanomsg
 cd /tmp
@@ -23,7 +23,7 @@ sudo cmake --build . --target install
 # post-installation
 sudo ldconfig
 
-# please, add to end of your ~/.bashrc
+# please, add to your ~/.bashrc
 export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:$PKG_CONFIG_PATH
 
