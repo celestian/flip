@@ -15,46 +15,36 @@ Features plan
 Development & Compilation
 -------------------------
 
-### Prerequisities
+### Preparation
 
-### nanomsg library
-
-##### nanomsg installation from copr
-
-``` bash
-sudo dnf copr enable tknapstad/nanomsg
-sudo dnf install -y nanomsg nanomsg-devel nanomsg-utils
-```
-
-If you need you can install nanomasg [manually](doc/howto_nanomsg_manually.md).
-
-#### others libraries and tools
-
-``` bash
-sudo dnf groups install -y "Development Tools" \
-                      "C Development Tools and Libraries"
-
-sudo dnf install -y \
-    pkgconf-pkg-config autoconf-archive clang pandoc \
-    systemd-devel \
-    libtalloc libtalloc-devel \
-    libtevent libtevent-devel \
-    libuuid libuuid-devel \
-    libcurl libcurl-devel \
-    libwebsockets libwebsockets-devel \
-    sqlite-libs sqlite-devel
-```
+-   [Fedora 26](doc/fedora_26/prepare.md)
+-   [Ubuntu 16.04](doc/ubuntu_16.04/prepare.md)
 
 ### Compile flip system
 
 ``` bash
-
 git clone --recursive https://github.com/celestian/flip.git
 
 cd flip
 ./bootstrap.sh
+./configure && make
+```
+
+``` bash
+# for cleaning
+make distclean
+```
+
+### Development utilities
+
+``` bash
+# Compilation out of source tree:
 . contrib/bashrc_flip
 reconfig && chmake
+# and for cleaning just remove build directory (e.g. `x86_64`)
+
+# Source code and markdown autoformat
+./prepare-commit.sh
 ```
 
 Resources
@@ -81,17 +71,23 @@ How to use
 TBD, draft:
 
 ``` bash
-    reconfig --enable-debug
+# Enable debug
+reconfig --enable-debug
 
-    make clean && chmake && ./flipd /home/celestian/Projects/flip/example/flip.conf
+# Run server flipd
+make clean && chmake && ./flipd /home/celestian/Projects/flip/example/flip.conf
 
-    ps -e | grep flip ; ll -l /tmp | grep flip
+# List flip processes
+ps -e | grep flip ; ll -l /tmp | grep flip
 
-    journalctl -t flip_crawler
+# See flip's logs
+journalctl -t flipd
+journalctl -t flip_crawler
 
-    nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
+# Debug on nanomsg sockets
+nanocat --sub --connect ipc:///tmp/crawler_pubsub.ipc -AQ
 
-
-    coredumpctl list
-    coredumpctl -o bar.coredump dump /<path>/<to>/<service>
+# Coredump
+coredumpctl list
+coredumpctl -o bar.coredump dump /<path>/<to>/<service>
 ```
