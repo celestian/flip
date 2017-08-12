@@ -9,7 +9,7 @@ sudo apt update && sudo apt upgrade
 
 ### nanomsg library
 
-Library nanomsg is unfortunately in 0.5 version—so we need to install it [manually](doc/ubuntu_16.04/howto_nanomsg_manually.md).
+Library nanomsg is unfortunately in 0.5 version—so we need to install it [manually](howto_nanomsg_manually.md).
 
 #### others libraries and tools
 
