@@ -16,7 +16,7 @@ sudo dnf copr enable tknapstad/nanomsg
 sudo dnf install -y nanomsg nanomsg-devel nanomsg-utils
 ```
 
-Or you can install nanomasg [manually](howto_nanomsg_manually.md).
+Or you can install nanomasg [manually](nanomsg_manually.md).
 
 #### others libraries and tools
 
