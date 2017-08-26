@@ -60,8 +60,36 @@ int main(int argc, char *argv[])
         goto done;
     }
 
+    /*
+        bool repeat = true;
+        while(repeat) {
+            ret = nbus_recieve(main_ctx, io_nbus_ctx, &chunk);
+            if (ret != EOK && ret != EAGAIN) {
+                LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
+                talloc_zfree(main_ctx);
+                exit(EXIT_FAILURE);
+            }
+            if (ret == EAGAIN) {
+                sleep(1);
+                continue;
+            }
+
+            LOG(LOG_CRIT, ">>> received: %s", chunk->data);
+            if (strncmp(chunk->data, "end", 3) == 0) {
+                repeat = false;
+            }
+
+            sleep(1);
+        }
+
+        sleep(3);
+        ret = EXIT_SUCCESS;
+        goto done;
+    */
+
+    // -------------------------------------------------------------------------
     ret = async_listen(main_ctx, main_ctx->event_ctx, io_nbus_ctx);
-    LOG(LOG_CRIT, "async_listen: %d", ret);
+    LOG(LOG_CRIT, "async_listen: %d", ret == EOK ? "true" : "false");
 
     LOG(LOG_CRIT, ">>> start");
 

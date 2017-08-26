@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "src/common/nbus/nbus.h"
 #include "src/common/utils/daemon.h"
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
     LOG(LOG_CRIT, ">>> start");
 
     ret = is_file_exist("ipc:///tmp/flipd.ipc");
-    printf("File is exist? %d", ret);
+    printf("File is exist? %s\n", ret == EOK ? "true" : "false");
 
     ret = nbus_init_pair(main_ctx, "ipc:///tmp/flipd.ipc", &io_nbus_ctx);
     if (ret != EOK) {
@@ -33,13 +34,23 @@ int main(int argc, char *argv[])
     }
 
     printf(">>> Sending...\n");
-    ret = nbus_send(io_nbus_ctx, "hello", 4);
+    ret = nbus_send(io_nbus_ctx, "hello", 5);
     if (ret != EOK) {
         LOG(LOG_CRIT, "Critical failure: Not enough memory.");
         exit(EXIT_FAILURE);
     }
-
     printf(">>> Sended!\n");
+
+    /*
+        ret = nbus_send(io_nbus_ctx, "end", 3);
+        if (ret != EOK) {
+            LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+            exit(EXIT_FAILURE);
+        }
+        printf(">>> END sended!\n");
+    */
+
+    sleep(10);
 
     ret = nbus_close(io_nbus_ctx);
     if (ret != EOK) {

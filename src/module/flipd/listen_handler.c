@@ -39,13 +39,15 @@ errno_t async_listen(TALLOC_CTX *mem_ctx, struct tevent_context *ev,
     ret = EOK;
 
 done:
-    if (ret == EOK) {
-        tevent_req_done(req);
-    } else {
-        tevent_req_error(req, ret);
-    }
+    /*
+        if (ret == EOK) {
+            tevent_req_done(req);
+        } else {
+            tevent_req_error(req, ret);
+        }
+    */
 
-    tevent_req_post(req, ev);
+    tevent_req_poll(req, ev);
     return ret;
 }
 
