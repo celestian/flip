@@ -10,7 +10,6 @@ endif
 
 AM_CPPFLAGS = \
 	$(TALLOC_CFLAGS) \
-	$(TEVENT_CFLAGS) \
 	$(NANOMSG_CFLAGS) \
 	${LIBSYSTEMD_CFLAGS} \
 	${UUID_CFLAGS}
@@ -33,7 +32,6 @@ flip_SOURCES = \
 flip_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
-	${TEVENT_LIBS} \
 	${NANOMSG_LIBS}
 
 
@@ -49,12 +47,10 @@ flipd_SOURCES = \
 	src/common/json/jsmn/jsmn.c \
 	src/common/json/json.c \
 	src/common/msg/msg.c \
-	src/module/flipd/listen_handler.c \
 	src/module/flipd/daemon_handler.c
 flipd_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
-	${TEVENT_LIBS} \
 	${NANOMSG_LIBS} \
 	${UUID_LIBS}
 
@@ -75,7 +71,6 @@ flip_crawler_SOURCES = \
 flip_crawler_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
-	${TEVENT_LIBS} \
 	${NANOMSG_LIBS} \
 	${CURL_LIBS} \
 	${LIBWEBSOCKETS_CFLAGS} \
@@ -100,7 +95,6 @@ flip_collector_SOURCES = \
 flip_collector_LDADD = \
 	${LIBSYSTEMD_LIBS} \
 	${TALLOC_LIBS} \
-	${TEVENT_LIBS} \
 	${NANOMSG_LIBS} \
 	${SQLITE3_LDFLAGS} \
 	${UUID_LIBS}

@@ -28,7 +28,6 @@ sudo dnf install -y \
     pkgconf-pkg-config autoconf-archive clang pandoc \
     systemd-devel \
     libtalloc libtalloc-devel \
-    libtevent libtevent-devel \
     libuuid libuuid-devel \
     libcurl libcurl-devel \
     libwebsockets libwebsockets-devel \

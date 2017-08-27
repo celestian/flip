@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
         goto done;
     }
 
+    sleep(2);
+
     printf(">>> Sending...\n");
     ret = nbus_send(io_nbus_ctx, "hello", 5);
     if (ret != EOK) {
@@ -41,14 +43,14 @@ int main(int argc, char *argv[])
     }
     printf(">>> Sended!\n");
 
-    /*
-        ret = nbus_send(io_nbus_ctx, "end", 3);
-        if (ret != EOK) {
-            LOG(LOG_CRIT, "Critical failure: Not enough memory.");
-            exit(EXIT_FAILURE);
-        }
-        printf(">>> END sended!\n");
-    */
+    sleep(2);
+
+    ret = nbus_send(io_nbus_ctx, "end", 3);
+    if (ret != EOK) {
+        LOG(LOG_CRIT, "Critical failure: Not enough memory.");
+        exit(EXIT_FAILURE);
+    }
+    printf(">>> END sended!\n");
 
     sleep(10);
 

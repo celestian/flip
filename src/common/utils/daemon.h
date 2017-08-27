@@ -5,7 +5,7 @@
 #include "src/common/utils/utils.h"
 
 struct main_context {
-    struct tevent_context *event_ctx;
+    ;
 };
 
 errno_t init_main_context(enum daemon_type daemon_type,

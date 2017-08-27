@@ -18,7 +18,6 @@ sudo apt install \
     pkgconf autoconf-archive clang pandoc \
     libsystemd0 libsystemd-dev \
     libtalloc2 libtalloc-dev libtalloc2-dbg \
-    libtevent0 libtevent-dev libtevent0-dbg \
     uuid uuid-dev libuuid1 \
     libcurl3 libcurl3-dev libcurl3-dbg \
     libwebsockets7 libwebsockets-dev \

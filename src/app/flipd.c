@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <nanomsg/nn.h>
 #include <talloc.h>
 
 #include "src/common/msg/msg.h"
@@ -17,7 +18,6 @@
 #include "src/common/utils/data.h"
 #include "src/common/utils/logs.h"
 #include "src/module/flipd/daemon_handler.h"
-#include "src/module/flipd/listen_handler.h"
 
 int main(int argc, char *argv[])
 {
@@ -60,9 +60,21 @@ int main(int argc, char *argv[])
         goto done;
     }
 
-    /*
-        bool repeat = true;
-        while(repeat) {
+    LOG(LOG_CRIT, "START");
+
+    struct nn_pollfd pfd[1];
+    pfd[0].fd = nbus_get_sock_fd(io_nbus_ctx);
+    pfd[0].events = NN_POLLIN;
+
+    while (true) {
+
+        ret = nn_poll(pfd, 1, 2000);
+        if (ret < 0) {
+            LOG(LOG_CRIT, "nn_poll() failed.");
+            ret = EXIT_SUCCESS;
+            goto done;
+        }
+        if (ret > 0) {
             ret = nbus_recieve(main_ctx, io_nbus_ctx, &chunk);
             if (ret != EOK && ret != EAGAIN) {
                 LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
@@ -70,52 +82,21 @@ int main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
             if (ret == EAGAIN) {
-                sleep(1);
                 continue;
             }
 
-            LOG(LOG_CRIT, ">>> received: %s", chunk->data);
+            LOG(LOG_CRIT, ">>> received: %s %d", chunk->data, NN_POLLIN);
             if (strncmp(chunk->data, "end", 3) == 0) {
-                repeat = false;
+                ret = EXIT_SUCCESS;
+                goto done;
             }
-
-            sleep(1);
         }
-
-        sleep(3);
-        ret = EXIT_SUCCESS;
-        goto done;
-    */
-
-    // -------------------------------------------------------------------------
-    ret = async_listen(main_ctx, main_ctx->event_ctx, io_nbus_ctx);
-    LOG(LOG_CRIT, "async_listen: %d", ret == EOK ? "true" : "false");
-
-    LOG(LOG_CRIT, ">>> start");
-
-    tevent_loop_wait(main_ctx->event_ctx);
-    // talloc_free(main_ctx->event_ctx);
-
-    LOG(LOG_CRIT, ">>> end");
+    }
 
     sleep(3);
-
     ret = EXIT_SUCCESS;
     goto done;
 
-    // -------------------------------------------------------------------------
-
-    ret = async_start_worker_daemon(main_ctx, "alpha",
-                                    "/tmp/flip_crawler_alpha.pid",
-                                    "ipc:///tmp/root_flip_crawler_alpha.ipc");
-
-    LOG(LOG_CRIT, "async_start_worker_daemon() = %i", ret);
-
-    sleep(10);
-
-    ret = EXIT_SUCCESS;
-    goto done;
-    // -------------------------------------------------------------------------
     // Start crawler daemon
     struct worker_daemon_ctx *wd_ctx;
 
@@ -136,37 +117,21 @@ int main(int argc, char *argv[])
         goto done;
     }
 
-    struct string_ctx *hmm_chunk;
-    ret = async_start_worker_daemon2(main_ctx, wd_ctx, &hmm_chunk);
+/*
+char *command = talloc_asprintf(
+    tmp_ctx, "/home/pcech/Projects/flip/x86_64/flip_crawler %s %s %s ",
+    identity_name, pid_file, url_root_ipc);
 
-    sleep(10);
-
-    ret = EXIT_SUCCESS;
+ret = system(command);
+if (ret != EOK) {
+    LOG(LOG_CRIT, "system() failed.");
+    ret = EIO;
     goto done;
-    // -------------------------------------------------------------------------
+}
+talloc_zfree(command);
+*/
 
-    int i = 30;
-    while (i > 0) {
-
-        ret = nbus_recieve(main_ctx, wd_ctx->nbus_ctx, &chunk);
-        if (ret != EOK && ret != EAGAIN) {
-            LOG(LOG_CRIT, "Critical failure: nbus_recieve() failed.");
-            talloc_zfree(main_ctx);
-            exit(EXIT_FAILURE);
-        }
-        if (ret == EAGAIN) {
-            sleep(1);
-            i--;
-            continue;
-        }
-
-        LOG(LOG_CRIT, ">>> received: %s", chunk->data);
-
-        i--;
-        sleep(1);
-    }
-
-    ret = EXIT_SUCCESS;
+// -------------------------------------------------------------------------
 
 done:
 
